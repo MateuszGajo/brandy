@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/extend-expect";
 import { render, fireEvent, cleanup, waitFor } from "@testing-library/react";
-import Signin from "../Signin";
+import Signin from "../auth/components/Signin";
 
 describe("test signin form", () => {
   afterAll(() => {
