@@ -1,0 +1,19 @@
+{
+    "extends":["node"],
+    "env":{
+        "node": true,
+        "es6": true,
+        "commonjs": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2021
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+              "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            },
+            "typescript":{}
+          }
+    }
+}
