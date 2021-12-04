@@ -1,14 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Signin from "features/views/Signin";
+import AppProvider from "app/provider/AppProvider";
+import { AppRoutes } from "app/routes";
 
 const App: React.FunctionComponent = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/signin" element={<Signin />} />
-      </Routes>
-    </Router>
+    <AppProvider>
+      <AppRoutes />
+    </AppProvider>
   );
 };
 
