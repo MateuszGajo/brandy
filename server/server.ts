@@ -1,10 +1,18 @@
 import express,{Application} from "express";
-import logger from "./utils/logger";
-logger.error("error")
-
-const app:Application = express();
-
-const port = process.env.port || 5000
+import Logger from "./loaders/logger";
+import config from "./config";
 
 
-app.listen(port,()=>console.log("server is running"))
+async function startServer() {
+    const app:Application = express();
+
+    await require("./loaders").default({expressApp:app})
+    
+    app.listen(config.port,()=>Logger.info("Server is running")).on("error",err=>{
+        Logger.error(err);
+        process.exit(1);
+    })
+}
+
+
+startServer();
