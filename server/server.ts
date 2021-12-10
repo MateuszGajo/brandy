@@ -8,7 +8,9 @@ async function startServer() {
 
     await require("./loaders").default({expressApp:app})
     
-    app.listen(config.port,()=>Logger.info("Server is running")).on("error",err=>{
+    app.listen(config.port,()=>
+        Logger.info("Server is running")
+        ).on("error",err=>{
         Logger.error(err);
         process.exit(1);
     })

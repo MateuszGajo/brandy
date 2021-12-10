@@ -10,5 +10,8 @@ if(envFound.error){
 
 export default {
     port:process.env.PORT || 5000,
-    datebaseURL: process.env.MONGODB_URI as string
+    datebaseURL: process.env.MONGODB_URI as string,
+    logs: {
+        level: process.env.LOG_LEVEL || 'silly',
+      },
 }

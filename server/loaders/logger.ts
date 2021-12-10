@@ -1,19 +1,34 @@
-import { getLogger, configure } from "log4js";
+import winston from 'winston';
+import config from '@/config';
 
-configure({
-  appenders: {
-    app: { type: "file", filename: "./logs/app.log" },
-  },
-  categories: {
-    default: {
-      appenders: ["app"],
-      level: "debug",
-    },
-  },
+const transports = [];
+if(process.env.NODE_ENV !== 'development') {
+  transports.push(
+    new winston.transports.Console()
+  )
+} else {
+  transports.push(
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.cli(),
+        winston.format.splat(),
+      )
+    })
+  )
+}
+
+const LoggerInstance = winston.createLogger({
+  level: config.logs.level,
+  levels: winston.config.npm.levels,
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    winston.format.errors({ stack: true }),
+    winston.format.splat(),
+    winston.format.json()
+  ),
+  transports
 });
 
-const logger = getLogger();
-
-logger.info("Log4js working!");
-
-export default logger;
+export default LoggerInstance;
