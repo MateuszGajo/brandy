@@ -1,5 +1,6 @@
 {
-    "extends":["node"],
+    "extends":["eslint:recommended",
+        "plugin:node/recommended"],
     "env":{
         "node": true,
         "es6": true,
@@ -15,5 +16,8 @@
             },
             "typescript":{}
           }
+    },
+    "rules": {
+       " no-process-exit": "off"
     }
 }
