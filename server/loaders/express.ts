@@ -7,5 +7,6 @@ export default({app}:{app:express.Application})=>{
       res.status(200).send("Brandy app")
     })
 
+    app.use(express.json())
     app.use(routes())
 }

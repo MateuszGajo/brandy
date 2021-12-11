@@ -14,4 +14,5 @@ export default {
     logs: {
         level: process.env.LOG_LEVEL || 'silly',
       },
+    jwtSecret:"FDA$#@SDff23e23zxf#@$DSFS",
 }
