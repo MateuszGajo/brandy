@@ -18,10 +18,8 @@ export default (app:Router)=>{
             const {user,token} = await authServiceInstance.signUp(req.body as IUserRegister);
             return res.status(200).send({user,token})
         }catch(e:any){
-            console.log(e instanceof APIError)
             logger.error("error",e);
-            console.log(e.code)
-            res.status(400).send("can't create user")
+            res.status(e.code).send(e.message)
         }
     })
 

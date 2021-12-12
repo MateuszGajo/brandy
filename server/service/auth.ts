@@ -14,20 +14,20 @@ export default class AuthService{
     ){}
     
     public async signUp(userRegister:IUserRegister):Promise<{user:IUser,token:string}>{
-        const hashedPassword = await bcrypt.hash(userRegister.password,10);
-        
+        const isEmailRegistered = await this.userModel.findOne({email:userRegister.email});
+        if(isEmailRegistered) throw new APIError("User already exists",409);
 
+        const hashedPassword = await bcrypt.hash(userRegister.password,10);
         const userRecord = await this.userModel.create({
             ...userRegister,
             password:hashedPassword
         })
 
         const token = this.generateToken(userRecord);
-        if(!userRecord){
-            throw new APIError("User cannot be created",400)
-        }
+
         const user = userRecord.toObject();
         Reflect.deleteProperty(user,"password");
+
         return {user,token};
         
     }
@@ -35,12 +35,12 @@ export default class AuthService{
     public async signIn(userLogin:IUserLogin){
         const userRecord = await this.userModel.findOne({email:userLogin.email});
         if(!userRecord){
-            throw new Error("User not registered");
+            throw new APIError("User not registered",404);
         }
 
 
         const validPassword = bcrypt.compare(userRecord.password,userLogin.password);
-        if(!validPassword) throw new Error("Incorrect password");
+        if(!validPassword) throw new APIError("Incorrect password",401);
         this.logger.silly("Password is valid, generating jwt");
 
         const token =  this.generateToken(userRecord);
