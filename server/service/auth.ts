@@ -1,68 +1,96 @@
-import { IUser,  IUserLogin,  IUserRegister } from "@/interfaces/IUser";
-import {Inject, Service} from "typedi";
+import { IUser, IUserLogin, IUserRegister } from "@/interfaces/IUser";
+import { Inject, Service } from "typedi";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken';
-import config from "@/config";
-import APIError from "@/api/Error/APIError";
-
+import jwt from "jsonwebtoken";
+import config from "../config";
+import APIError from "../api/Error/APIError";
+import { Logger } from "winston";
 
 @Service()
-export default class AuthService{
-    constructor(
-        @Inject('userModel') private userModel: Models.UserModel,
-        @Inject("logger") private logger:any
-    ){}
-    
-    public async signUp(userRegister:IUserRegister):Promise<{user:IUser,token:string}>{
-        const isEmailRegistered = await this.userModel.findOne({email:userRegister.email});
-        if(isEmailRegistered) throw new APIError("User already exists",409);
+export default class AuthService {
+  constructor(
+    @Inject("userModel") private userModel: Models.UserModel,
+    @Inject("logger") private logger: Logger
+  ) {}
 
-        const hashedPassword = await bcrypt.hash(userRegister.password,10);
-        const userRecord = await this.userModel.create({
-            ...userRegister,
-            password:hashedPassword
-        })
+  public async signUp(
+    userRegister: IUserRegister
+  ): Promise<{ user: IUser; accessToken: string; refreshToken: string }> {
+    const isEmailRegistered = await this.userModel.findOne({
+      email: userRegister.email,
+    });
+    if (isEmailRegistered) throw new APIError("User already exists", 409);
 
-        const token = this.generateToken(userRecord);
+    const hashedPassword = await bcrypt.hash(userRegister.password, 10);
+    const userRecord = await this.userModel.create({
+      ...userRegister,
+      password: hashedPassword,
+    });
 
-        const user = userRecord.toObject();
-        Reflect.deleteProperty(user,"password");
+    const accessToken = this.generateToken(userRecord, "accessToken");
+    const refreshToken = this.generateToken(userRecord, "refreshToken");
 
-        return {user,token};
-        
+    const user = userRecord.toObject();
+    Reflect.deleteProperty(user, "password");
+
+    return { user, accessToken, refreshToken };
+  }
+
+  public async signIn(
+    userLogin: IUserLogin
+  ): Promise<{ user: IUser; accessToken: string; refreshToken: string }> {
+    console.log("Hello?");
+    console.log(this.userModel);
+    const userRecord = await this.userModel.findOne({ email: userLogin.email });
+
+    if (!userRecord) {
+      throw new APIError("User not registered", 404);
     }
 
-    public async signIn(userLogin:IUserLogin){
-        const userRecord = await this.userModel.findOne({email:userLogin.email});
-        if(!userRecord){
-            throw new APIError("User not registered",404);
-        }
+    const validPassword = bcrypt.compare(
+      userRecord.password,
+      userLogin.password
+    );
+    if (!validPassword) throw new APIError("Incorrect password", 401);
+    this.logger.silly("Password is valid, generating jwt");
 
+    const accessToken = this.generateToken(userRecord, "accessToken");
+    const refreshToken = this.generateToken(userRecord, "refreshToken");
 
-        const validPassword = bcrypt.compare(userRecord.password,userLogin.password);
-        if(!validPassword) throw new APIError("Incorrect password",401);
-        this.logger.silly("Password is valid, generating jwt");
+    const user = userRecord.toObject();
+    Reflect.deleteProperty(user, "password");
 
-        const token =  this.generateToken(userRecord);
+    return { user, accessToken, refreshToken };
+  }
 
-        const user = userRecord.toObject();
-        Reflect.deleteProperty(user,"password");
+  public refreshToken(refreshToken: string): { accessToken: string } {
+    const validRefreshToken = jwt.verify(refreshToken, config.jwtRefreshSecret);
 
-        return {user,token}
+    if (!validRefreshToken) throw new APIError("Refresh token is invalid", 401);
 
-    }
+    const user = jwt.decode(refreshToken) as IUser;
 
-    private generateToken(user:IUser){
-        const current = new Date();
-        const exp = new Date(current);
-        exp.setDate(current.getDate() + 60);
+    const accessToken = this.generateToken(user, "accessToken");
+    return { accessToken };
+  }
 
-        this.logger.silly("Sign JWT for userIDd:", user._id);
+  private generateToken(user: IUser, type: "accessToken" | "refreshToken") {
+    this.logger.silly(`Generate JWT for userID: ${user._id}`);
 
-        return jwt.sign({
-            _id:user._id,
-            nick:user.nick,
-            exp:exp.getTime() /1000
-        },config.jwtSecret)
-    }
+    const isAccessToken = type === "accessToken";
+    const expiresIn = isAccessToken ? "1h" : "7d";
+
+    const jwtPayload = {
+      _id: user._id,
+      nick: user.nick,
+    };
+    const jwtSecret = isAccessToken
+      ? config.jwtAccessSecret
+      : config.jwtRefreshSecret;
+    const jwtOption = {
+      expiresIn,
+    };
+
+    return jwt.sign(jwtPayload, jwtSecret, jwtOption);
+  }
 }

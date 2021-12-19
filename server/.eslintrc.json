@@ -1,23 +1,22 @@
 {
-    "extends":["eslint:recommended",
-        "plugin:node/recommended"],
-    "env":{
-        "node": true,
-        "es6": true,
-        "commonjs": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 2021
-    },
-    "settings": {
-        "import/resolver": {
-            "node": {
-              "extensions": [".js", ".jsx", ".ts", ".tsx"]
-            },
-            "typescript":{}
-          }
-    },
-    "rules": {
-       " no-process-exit": "off"
+  "extends": ["eslint:recommended", "plugin:node/recommended"],
+  "env": {
+    "node": true,
+    "es6": true,
+    "commonjs": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {}
     }
+  },
+  "rules": {
+    " no-process-exit": "off"
+  }
 }
