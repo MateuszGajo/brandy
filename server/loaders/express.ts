@@ -6,6 +6,9 @@ export default ({ app }: { app: express.Application }) => {
   app.get("/", (req, res) => {
     res.status(200).send("Brandy app");
   });
+  // app.post("/auth/signin", (req, res) => {
+  //   res.status(200);
+  // });
   app.use(cookieParser());
   app.use(express.json());
   app.use(routes());

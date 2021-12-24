@@ -4,18 +4,18 @@ import expressLoader from "./express";
 import { Application } from "express";
 import dependancyInjector from "./dependancyInjector";
 
-export default async ({ expressApp }: { expressApp: Application }) => {
-  const mongoConnection = await mongooseLoader();
+export default ({ expressApp }: { expressApp: Application }) => {
+  const mongoConnection = mongooseLoader();
   Logger.info("Mongodb is running!");
 
   const userModel = {
     name: "userModel",
     model: require("../models/user").default,
   };
-  await dependancyInjector({
+  dependancyInjector({
     models: [userModel],
   });
 
-  await expressLoader({ app: expressApp });
+  expressLoader({ app: expressApp });
   Logger.info("Express loaded");
 };

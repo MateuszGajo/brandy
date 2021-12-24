@@ -39,17 +39,15 @@ export default class AuthService {
   public async signIn(
     userLogin: IUserLogin
   ): Promise<{ user: IUser; accessToken: string; refreshToken: string }> {
-    console.log("Hello?");
-    console.log(this.userModel);
     const userRecord = await this.userModel.findOne({ email: userLogin.email });
 
     if (!userRecord) {
       throw new APIError("User not registered", 404);
     }
 
-    const validPassword = bcrypt.compare(
-      userRecord.password,
-      userLogin.password
+    const validPassword = await bcrypt.compare(
+      userLogin.password,
+      userRecord.password
     );
     if (!validPassword) throw new APIError("Incorrect password", 401);
     this.logger.silly("Password is valid, generating jwt");
@@ -63,10 +61,35 @@ export default class AuthService {
     return { user, accessToken, refreshToken };
   }
 
-  public refreshToken(refreshToken: string): { accessToken: string } {
-    const validRefreshToken = jwt.verify(refreshToken, config.jwtRefreshSecret);
+  public async deleteAccount(password: string, token: string) {
+    const { email } = this.decodeToken(token).user || { email: "" };
 
-    if (!validRefreshToken) throw new APIError("Refresh token is invalid", 401);
+    const userRecord = await this.userModel.findOne({ email });
+    if (!userRecord) throw new APIError("User not registered", 404);
+
+    const validPassword = await bcrypt.compare(password, userRecord.password);
+    if (!validPassword) throw new APIError("Incorrect password", 401);
+
+    try {
+      await userRecord.remove();
+    } catch (e) {
+      console.log("error");
+    }
+  }
+
+  private decodeToken(token: string): { user: IUser } {
+    const user = jwt.decode(token) as IUser;
+    return { user };
+  }
+
+  public refreshToken(refreshToken: string): { accessToken: string } {
+    console.log("refresh token");
+    console.log(refreshToken);
+    try {
+      jwt.verify(refreshToken, config.jwtRefreshSecret);
+    } catch (e) {
+      throw new APIError("Refresh token is invalid", 401);
+    }
 
     const user = jwt.decode(refreshToken) as IUser;
 
@@ -83,6 +106,7 @@ export default class AuthService {
     const jwtPayload = {
       _id: user._id,
       nick: user.nick,
+      email: user.email,
     };
     const jwtSecret = isAccessToken
       ? config.jwtAccessSecret

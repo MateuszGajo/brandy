@@ -3,10 +3,10 @@ import express, { Application } from "express";
 import Logger from "./loaders/logger";
 import config from "./config";
 
-async function startServer() {
+function startServer() {
   const app: Application = express();
 
-  await require("./loaders").default({ expressApp: app });
+  require("./loaders").default({ expressApp: app });
 
   app
     .listen(config.port, () => Logger.info("Server is running"))
