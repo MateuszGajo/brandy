@@ -72,9 +72,7 @@ export default class AuthService {
 
     try {
       await userRecord.remove();
-    } catch (e) {
-      console.log("error");
-    }
+    } catch (e) {}
   }
 
   private decodeToken(token: string): { user: IUser } {
@@ -83,8 +81,6 @@ export default class AuthService {
   }
 
   public refreshToken(refreshToken: string): { accessToken: string } {
-    console.log("refresh token");
-    console.log(refreshToken);
     try {
       jwt.verify(refreshToken, config.jwtRefreshSecret);
     } catch (e) {

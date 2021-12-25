@@ -1,6 +1,6 @@
 import winston from "winston";
 import config from "../config";
-console.log(config.port);
+
 const transports = [];
 if (process.env.NODE_ENV !== "development") {
   transports.push(new winston.transports.Console());

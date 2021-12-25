@@ -5,6 +5,7 @@ import AuthService from "../../../service/auth";
 import { IUserRegister, IUserLogin } from "../../../interfaces/IUser";
 import { isAPIError } from "../../Error/interface";
 import { signupValidator, singinValidator } from "./validation";
+import verifyAccessToken from "../../helpers/verifyAccessToken";
 
 const route = Router();
 
@@ -45,7 +46,6 @@ export default (app: Router) => {
     const logger: Logger = Container.get("logger");
     logger.debug(`Calling Sing-in endpoint with body: ${req.body}`);
     try {
-      console.log("hjalo?");
       const authServiceInstance = Container.get(AuthService);
       const { user, accessToken, refreshToken } =
         await authServiceInstance.signIn(req.body as IUserLogin);
@@ -91,7 +91,7 @@ export default (app: Router) => {
     }
   });
 
-  route.get("/logout", async (req, res) => {
+  route.get("/logout", verifyAccessToken, async (req, res) => {
     const logger: Logger = Container.get("logger");
     logger.debug(`User logout: ${req.body}`);
 
@@ -112,9 +112,6 @@ export default (app: Router) => {
       );
       return res.status(200).send("Account deleted");
     } catch (e) {
-      console.log("remove error");
-      console.log(e);
-      logger.error("error", e);
       if (isAPIError(e)) {
         return res.status(e.code).send(e.message);
       }

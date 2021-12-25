@@ -6,7 +6,6 @@ describe("authentiction test", () => {
     it("no creds", async () => {
       const resp = await request(app).post("/auth/signin").send();
       expect(resp.statusCode).toBe(400);
-      console.log(resp.text);
     });
 
     it("invalid creds", async () => {
@@ -40,6 +39,15 @@ describe("authentiction test", () => {
       });
       expect(resp.text).toBe("password is too long");
       expect(resp.statusCode).toBe(400);
+    });
+
+    it("login to non existing account", async () => {
+      let resp = await request(app).post("/auth/signin").send({
+        email: "fds@dd.pl",
+        password: "fdsafddd",
+      });
+      expect(resp.statusCode).toBe(404);
+      expect(resp.text).toBe("User not registered");
     });
   });
 
@@ -99,7 +107,7 @@ describe("authentiction test", () => {
 
   describe("authentication flow", () => {
     const newUser = {
-      email: "example33@example.pl",
+      email: "example35@example.pl",
       password: "test1234",
       nick: "example",
     };
@@ -110,7 +118,6 @@ describe("authentiction test", () => {
 
     it("register user", async () => {
       const resp = await request(app).post("/auth/signup").send(newUser);
-
       expect(resp.status).toBe(200);
       expect(resp.body).toMatchObject({
         user: {
@@ -183,6 +190,26 @@ describe("authentiction test", () => {
 
       expect(resp.statusCode).toBe(200);
       expect(accessToken.length).not.toEqual(0);
+    });
+
+    it("remove account when user is logged in with wrong password", async () => {
+      const resp = await request(app)
+        .delete("/auth/account/delete")
+        .set("Cookie", [accessTokenString])
+        .send({ password: "wrong password" });
+
+      expect(resp.status).toBe(401);
+      expect(resp.text).toBe("Incorrect password");
+    });
+
+    it("logout with invalid token", async () => {
+      const resp = await request(app)
+        .get("/auth/logout")
+        .set("Cookie", ["access_token=invalid; Path=/;"])
+        .send();
+
+      expect(resp.statusCode).toBe(401);
+      expect(resp.text).toEqual("Invalid token");
     });
 
     it("logout", async () => {

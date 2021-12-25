@@ -11,6 +11,8 @@ function startServer() {
   app
     .listen(config.port, () => Logger.info("Server is running"))
     .on("error", (err) => {
+      console.log("invoke error");
+      console.log(err);
       Logger.error(err);
       process.exit(1);
     });
