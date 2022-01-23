@@ -1,7 +1,20 @@
-import { Grid, CircularProgress, Alert, Box, Button } from "@mui/material";
+import { Grid, Alert, Button } from "@mui/material";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { BrowserRouter as Router } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { blue, deepPurple } from "@mui/material/colors";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: deepPurple[500],
+    },
+    secondary: {
+      main: blue[500],
+    },
+  },
+});
 
 interface IProps {
   children: React.ReactNode;
@@ -40,7 +53,9 @@ const AppProvider: React.FC<IProps> = ({ children }) => {
       }
     >
       <ErrorBoundary FallbackComponent={Fallback}>
-        <Router>{children}</Router>
+        <ThemeProvider theme={theme}>
+          <Router>{children}</Router>
+        </ThemeProvider>
       </ErrorBoundary>
     </React.Suspense>
   );

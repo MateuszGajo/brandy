@@ -1,5 +1,6 @@
 import axios from "axios";
 import { store } from "app/provider/RootStoreProvider";
+import { string } from "yup/lib/locale";
 axios.defaults.baseURL = "http://localhost:5000/";
 
 axios.interceptors.response.use(
@@ -32,3 +33,10 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+const requests = {
+  get: <T>(url: string) => axios.get<T>(url),
+  post: <T>(url: string, body: {}) => axios.post<T>(url, body),
+  put: <T>(url: string, body: {}) => axios.put<T>(url, body),
+  delete: <T>(url: string) => axios.delete<T>(url),
+};
