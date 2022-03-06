@@ -1,8 +1,8 @@
 import React from "react";
-import SigninForm from "../components/SigninForm";
+import SigninForm from "./components/SigninForm";
 import AuthenticationLayout from "app/layout/Authentication";
 
-const Register = () => {
+const Login = () => {
   return (
     <AuthenticationLayout>
       <SigninForm />
@@ -10,4 +10,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

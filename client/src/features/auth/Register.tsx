@@ -1,13 +1,13 @@
 import React from "react";
-import SigninForm from "../components/SigninForm";
 import AuthenticationLayout from "app/layout/Authentication";
+import SignupForm from "./components/SignupForm";
 
-const Login = () => {
+const Register = () => {
   return (
     <AuthenticationLayout>
-      <SigninForm />
+      <SignupForm />
     </AuthenticationLayout>
   );
 };
 
-export default Login;
+export default Register;

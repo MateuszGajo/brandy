@@ -26,11 +26,13 @@ export default (app: Router) => {
 
         res.cookie("access_token", accessToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
+          sameSite: true,
+          secure: true,
         });
         res.cookie("refresh_token", refreshToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
+          sameSite: true,
+          secure: true,
         });
         return res.status(200).send({ user });
       } catch (e) {

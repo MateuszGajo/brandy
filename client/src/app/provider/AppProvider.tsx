@@ -1,7 +1,6 @@
 import { Grid, Alert, Button } from "@mui/material";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { BrowserRouter as Router } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
 
@@ -12,6 +11,9 @@ const theme = createTheme({
     },
     secondary: {
       main: blue[500],
+    },
+    action: {
+      disabledBackground: deepPurple[300],
     },
   },
 });
@@ -53,9 +55,7 @@ const AppProvider: React.FC<IProps> = ({ children }) => {
       }
     >
       <ErrorBoundary FallbackComponent={Fallback}>
-        <ThemeProvider theme={theme}>
-          <Router>{children}</Router>
-        </ThemeProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </ErrorBoundary>
     </React.Suspense>
   );

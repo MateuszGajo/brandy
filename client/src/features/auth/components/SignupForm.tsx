@@ -15,8 +15,12 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import styles from "./styles/SigninForm.style";
 import { useAuthenticationStore } from "app/provider/RootStoreProvider";
-import { ICreds } from "app/models/Authentication";
+import { INewUser } from "app/models/Authentication";
 import { observer } from "mobx-react-lite";
+
+interface IFormValues extends INewUser {
+  confirmPassword: string;
+}
 
 const schema = yup.object({
   email: yup.string().required("Wpisz email").email("Wpisz poprawny email"),
@@ -24,24 +28,35 @@ const schema = yup.object({
     .string()
     .required("Wpisz hasło")
     .min(8, "Hasło musi zawierać min. 8 znaków"),
+  confirmPassword: yup
+    .string()
+    .required("Powtórz hasło")
+    .oneOf([yup.ref("password"), null], "Hasła są różne"),
+  nick: yup.string().required("Wpisz nick"),
 });
 
 const SigninForm: React.FC = () => {
-  const { login, loginError, isSubmitting } = useAuthenticationStore();
+  const { register, registerError, isSubmitting } = useAuthenticationStore();
 
-  const handleSubmit = (values: ICreds) => {
-    login(values);
+  const handleSubmit = (values: IFormValues) => {
+    const { confirmPassword, ...creds } = values;
+    register(creds);
   };
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
+      confirmPassword: "",
+      nick: "",
     },
     validationSchema: schema,
     onSubmit: handleSubmit,
   });
 
+  console.log(formik.errors);
+  console.log("formik touched");
+  console.log(formik.touched);
   return (
     <Grid alignItems="center">
       <Container component="main">
@@ -51,17 +66,31 @@ const SigninForm: React.FC = () => {
             <LockIcon sx={styles.icon} />
           </Avatar>
           <Typography variant="h4" component="h2">
-            Zaloguj się
+            Zarejstruj się
           </Typography>
-          <Box component="form" onSubmit={formik.handleSubmit} noValidate>
+          <form
+            // component="form"
+            onSubmit={formik.handleSubmit}
+          >
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Nazwa"
+              name="nick"
+              value={formik.values.nick}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.nick && !!formik.errors.nick}
+              helperText={formik.touched.nick && formik.errors.nick}
+            />
             <TextField
               margin="normal"
               fullWidth
               label="Email"
               name="email"
               value={formik.values.email}
-              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
               error={formik.touched.email && !!formik.errors.email}
               helperText={formik.touched.email && formik.errors.email}
             />
@@ -78,9 +107,27 @@ const SigninForm: React.FC = () => {
               error={formik.touched.password && !!formik.errors.password}
               helperText={formik.touched.password && formik.errors.password}
             />
-            {loginError ? (
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Powtórz hasło"
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.confirmPassword &&
+                !!formik.errors.confirmPassword
+              }
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
+            />
+            {registerError ? (
               <FormHelperText margin="dense" error>
-                {loginError}
+                {registerError}
               </FormHelperText>
             ) : null}
 
@@ -94,9 +141,9 @@ const SigninForm: React.FC = () => {
               primary
               disabled={!(formik.isValid && formik.dirty)}
             >
-              Zaloguj
+              Zarejstruj
             </LoadingButton>
-          </Box>
+          </form>
         </Box>
       </Container>
     </Grid>

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { store } from "app/provider/RootStoreProvider";
-import { string } from "yup/lib/locale";
+import { ICreds } from "app/models/Authentication";
 axios.defaults.baseURL = "http://localhost:5000/";
+axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
   (response) => {
@@ -36,7 +37,14 @@ axios.interceptors.response.use(
 
 const requests = {
   get: <T>(url: string) => axios.get<T>(url),
-  post: <T>(url: string, body: {}) => axios.post<T>(url, body),
-  put: <T>(url: string, body: {}) => axios.put<T>(url, body),
+  post: <T>(url: string, body: any) => axios.post<T>(url, body),
+  put: <T>(url: string, body: any) => axios.put<T>(url, body),
   delete: <T>(url: string) => axios.delete<T>(url),
 };
+
+const Auth = {
+  login: (creds: ICreds) => requests.post("/auth/signin", creds),
+  register: (creds: ICreds) => requests.post("/auth/signup", creds),
+};
+
+export default { Auth };

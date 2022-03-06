@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 import styles from "./styles/Authentication.styles";
-import { NavLink } from "react-router-dom";
 import CustomLink from "components/CustomLink/CustomLink";
 
 interface IProps {
@@ -9,7 +8,7 @@ interface IProps {
   component?: string;
 }
 
-const Authentication: React.FC<IProps> = ({ children, component }) => {
+const Authentication: React.FC<IProps> = ({ children }) => {
   return (
     <Box sx={styles.wrapper}>
       <Container maxWidth="xs">
@@ -28,12 +27,12 @@ const Authentication: React.FC<IProps> = ({ children, component }) => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Typography component={CustomLink} to="/auth/login">
+                <Typography component={CustomLink} to="/signin">
                   Zaloguj
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography component={CustomLink} to="/auth/register">
+                <Typography component={CustomLink} to="/register">
                   Zarejstruj
                 </Typography>
               </Grid>
