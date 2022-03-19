@@ -6,3 +6,7 @@ export interface ICreds {
 export interface INewUser extends ICreds {
   nick: string;
 }
+
+export interface IUser {
+  nick: string;
+}

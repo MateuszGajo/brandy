@@ -5,11 +5,14 @@ import reportWebVitals from "./reportWebVitals";
 import { StoreContext, store } from "./app/provider/RootStoreProvider";
 import "app/styles/reset.css";
 import "app/styles/global.css";
+import Dashboard from "features/Dashboard/Dashboard";
 
 ReactDOM.render(
   <React.StrictMode>
     <StoreContext.Provider value={store}>
-      <App />
+      {/* <App />
+      < */}
+      <Dashboard />
     </StoreContext.Provider>
   </React.StrictMode>,
   document.getElementById("root")
