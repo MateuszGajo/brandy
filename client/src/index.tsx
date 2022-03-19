@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { StoreContext, store } from "./app/provider/RootStoreProvider";
+import "app/styles/reset.css";
+import "app/styles/global.css";
 
 ReactDOM.render(
   <React.StrictMode>

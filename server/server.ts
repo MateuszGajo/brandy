@@ -1,20 +1,22 @@
-import express,{Application} from "express";
+import "reflect-metadata";
+import express, { Application } from "express";
 import Logger from "./loaders/logger";
 import config from "./config";
 
+function startServer() {
+  const app: Application = express();
 
-async function startServer() {
-    const app:Application = express();
+  require("./loaders").default({ expressApp: app });
 
-    await require("./loaders").default({expressApp:app})
-    
-    app.listen(config.port,()=>
-        Logger.info("Server is running")
-        ).on("error",err=>{
-        Logger.error(err);
-        process.exit(1);
-    })
+  app
+    .listen(config.port, () => Logger.info("Server is running"))
+    .on("error", (err) => {
+      console.log("invoke error");
+      console.log(err);
+      Logger.error(err);
+      process.exit(1);
+    });
+  return app;
 }
 
-
-startServer();
+export default startServer();

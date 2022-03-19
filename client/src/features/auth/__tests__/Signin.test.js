@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/extend-expect";
 import { render, fireEvent, cleanup, waitFor } from "@testing-library/react";
-import Signin from "../auth/components/Signin";
+import SigninForm from "../components/SigninForm";
 
 describe("test signin form", () => {
   afterAll(() => {
@@ -8,7 +8,7 @@ describe("test signin form", () => {
   });
 
   it("invalid inputs, button should be disabled", async () => {
-    const { getByTestId, container } = render(<Signin />);
+    const { getByTestId, container } = render(<SigninForm />);
     const emailInput = container.querySelector("input[name='email']");
     const passwordInput = container.querySelector("input[name='password']");
     const submitButton = getByTestId("signin-submit-button");
@@ -24,7 +24,7 @@ describe("test signin form", () => {
   });
 
   it("all inputs are empty, button should be disabled", async () => {
-    const { getByTestId, container } = render(<Signin />);
+    const { getByTestId, container } = render(<SigninForm />);
     const emailInput = container.querySelector("input[name='email']");
     const passwordInput = container.querySelector("input[name='password']");
     const submitButton = getByTestId("signin-submit-button");
@@ -38,7 +38,7 @@ describe("test signin form", () => {
   });
 
   it("valid inputs, button shouldn't be disabled", async () => {
-    const { getByTestId, container } = render(<Signin />);
+    const { getByTestId, container } = render(<SigninForm />);
     const emailInput = container.querySelector("input[name='email']");
     const passwordInput = container.querySelector("input[name='password']");
     const submitButton = getByTestId("signin-submit-button");
