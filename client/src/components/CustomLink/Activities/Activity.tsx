@@ -1,11 +1,13 @@
 import {
   Avatar,
   Box,
+  createTheme,
   Grid,
   IconButton,
   Menu,
   MenuItem,
   Paper,
+  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { IActivity } from "app/models/Activity";
@@ -26,11 +28,16 @@ const Activity: React.FC<IProps> = ({ activity }) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const theme = createTheme({
+    typography: {
+      fontFamily: "Arial",
+    },
+  });
   return (
     <Paper elevation={1} sx={styles.container}>
       <Box sx={styles.header}>
         <Box sx={styles.activityInfo}>
-          <Avatar src="./favicon.ico"></Avatar>
+          <Avatar src="./favicon.ico" sx={styles.activityAvatar}></Avatar>
           <Typography sx={styles.authorName}>Danny</Typography>
           <Typography sx={styles.acitvityDate}>Dodano 24/02/2020</Typography>
         </Box>

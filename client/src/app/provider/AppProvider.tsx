@@ -16,6 +16,9 @@ const theme = createTheme({
       disabledBackground: deepPurple[300],
     },
   },
+  typography: {
+    fontFamily: ["IBM Plex Sans", "Arial", "sans-serif"].join(","),
+  },
 });
 
 interface IProps {

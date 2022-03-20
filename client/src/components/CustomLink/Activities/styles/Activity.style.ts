@@ -12,16 +12,21 @@ const styles: ICustomStyle = {
     display: "flex",
     alignItems: "center",
   },
+  activityAvatar: {
+    width: "20px",
+    height: "20px",
+  },
   authorName: {
     color: "#1c1c1c",
-    fontWeight: "bold",
     fontSize: "0.8rem",
+    fontWeight: 700,
     marginLeft: "0.1rem",
   },
   acitvityDate: {
     color: "#787C7E",
     marginLeft: "0.5rem",
-    fontSize: "0.9rem",
+    fontWeight: 400,
+    fontSize: "0.8rem",
   },
   activityTitle: {
     fontWeight: "bold",
