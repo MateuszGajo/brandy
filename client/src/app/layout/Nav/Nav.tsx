@@ -3,23 +3,52 @@ import {
   Avatar,
   Box,
   IconButton,
+  InputAdornment,
+  TextField,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
-import styles from "./Nav.style";
+import { FiSearch } from "react-icons/fi";
+
 const Nav = () => {
   return (
-    <AppBar sx={styles.nav} position="sticky" elevation={3}>
+    <AppBar
+      position="sticky"
+      elevation={3}
+      sx={{ background: "white", color: "black" }}
+    >
       <Toolbar variant="dense">
-        <Typography variant="h6">LOGO</Typography>
-        <Box sx={styles.user}>
-          <Tooltip title="open">
-            <IconButton>
-              <Avatar alt="name" src="./favicon.ico"></Avatar>
-            </IconButton>
-          </Tooltip>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          width="100%"
+          alignItems="center"
+        >
+          <Typography variant="h6">LOGO</Typography>
+          <TextField
+            size="small"
+            placeholder="search"
+            sx={{
+              width: "30rem",
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FiSearch />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1">Nickname</Typography>
+            <Tooltip title="open">
+              <IconButton>
+                <Avatar alt="name" src="./favicon.ico"></Avatar>
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

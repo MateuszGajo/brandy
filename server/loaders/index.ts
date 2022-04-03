@@ -3,6 +3,7 @@ import Logger from "./logger";
 import expressLoader from "./express";
 import { Application } from "express";
 import dependancyInjector from "./dependancyInjector";
+import { required } from "joi";
 
 export default ({ expressApp }: { expressApp: Application }) => {
   const mongoConnection = mongooseLoader();
@@ -12,8 +13,13 @@ export default ({ expressApp }: { expressApp: Application }) => {
     name: "userModel",
     model: require("../models/user").default,
   };
+
+  const activityModel = {
+    name: "activityModel",
+    model: require("../models/activity").default,
+  };
   dependancyInjector({
-    models: [userModel],
+    models: [userModel, activityModel],
   });
 
   expressLoader({ app: expressApp });
