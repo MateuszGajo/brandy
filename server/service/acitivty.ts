@@ -1,3 +1,8 @@
+import {
+  IActivity,
+  ICreateActivity,
+  ICreateActivityService,
+} from "@/interfaces/IActivity";
 import { Inject, Service } from "typedi";
 import { Logger } from "winston";
 
@@ -9,9 +14,9 @@ export default class ActivityService {
   ) {}
 
   public async list(
-    start: number,
-    number: number,
-    sort: "hot" | "new" | "top"
+    start: number = 0,
+    limit: number = 10,
+    sort: "hot" | "new" | "top" = "hot"
   ) {
     const sortObj = {
       hot: () => {
@@ -29,6 +34,23 @@ export default class ActivityService {
       .find({})
       .sort(sortObj[sort as keyof typeof sortObj])
       .skip(start)
-      .limit(number);
+      .limit(limit);
+  }
+
+  public async add(
+    activity: ICreateActivityService
+  ): Promise<{ activity: IActivity }> {
+    const newActivity: ICreateActivity = {
+      userId: activity.userId,
+      text: activity.text,
+      upVoteRatio: 0,
+      upVotes: 0,
+      downVotes: 0,
+      votes: 0,
+      date: new Date(),
+      photo: activity.pictureUrl || undefined,
+    };
+    const result = await this.activityModel.create(newActivity);
+    return { activity: result };
   }
 }
