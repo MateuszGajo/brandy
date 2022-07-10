@@ -1,4 +1,4 @@
-import { Grid, Alert, Button } from "@mui/material";
+import { Grid, Alert, Button, Box, CircularProgress } from "@mui/material";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -51,15 +51,12 @@ const AppProvider: React.FC<IProps> = ({ children }) => {
   return (
     <React.Suspense
       fallback={
-        // <Box sx={{ display: "flex" }}>
-        //   <CircularProgress />
-        // </Box>
-        <p>fds</p>
+        <Box sx={{ display: "flex" }}>
+          <CircularProgress />
+        </Box>
       }
     >
-      <ErrorBoundary FallbackComponent={Fallback}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </ErrorBoundary>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </React.Suspense>
   );
 };

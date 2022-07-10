@@ -11,7 +11,7 @@ const Home: React.FC<IProps> = ({ children }) => {
   return (
     <Box sx={styles.container}>
       <Nav />
-      <Container maxWidth="sm">{children}</Container>
+      <Container maxWidth="md">{children}</Container>
     </Box>
   );
 };

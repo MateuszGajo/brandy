@@ -14,12 +14,14 @@ import React from "react";
 import { ImArrowUp, ImArrowDown } from "react-icons/im";
 import { FaRegCommentDots } from "react-icons/fa";
 import { red } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
   activity: IActivity;
 }
 
-const Activity: React.FC<IProps> = ({ activity }) => {
+const ActivityListItem: React.FC<IProps> = ({ activity }) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,6 +29,10 @@ const Activity: React.FC<IProps> = ({ activity }) => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const onCommentClick = () => {
+    navigate(`/activity/${activity.id}`);
   };
 
   return (
@@ -110,7 +116,11 @@ const Activity: React.FC<IProps> = ({ activity }) => {
             </Box>
             <Grid container ml={2}>
               <Grid item md={6}>
-                <Box display="flex" alignItems="center">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  onClick={onCommentClick}
+                >
                   <IconButton>
                     <FaRegCommentDots />
                   </IconButton>
@@ -119,7 +129,7 @@ const Activity: React.FC<IProps> = ({ activity }) => {
                     fontSize="0.95rem"
                     color="#a1a1a1"
                   >
-                    50
+                    {activity.commentCount}
                   </Typography>
                 </Box>
               </Grid>
@@ -131,4 +141,4 @@ const Activity: React.FC<IProps> = ({ activity }) => {
   );
 };
 
-export default Activity;
+export default ActivityListItem;

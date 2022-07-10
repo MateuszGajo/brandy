@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { FiSearch } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Nav = () => {
   return (
@@ -26,7 +27,9 @@ const Nav = () => {
           width="100%"
           alignItems="center"
         >
-          <Typography variant="h6">LOGO</Typography>
+          <Typography variant="h6">
+            <Link to="/">LOGO</Link>
+          </Typography>
           <TextField
             size="small"
             placeholder="search"

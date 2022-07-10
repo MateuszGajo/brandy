@@ -15,10 +15,10 @@ const ActivitySchema = new Schema(
       type: String,
     },
     upVotes: {
-      type: Number,
+      type: [String],
     },
     downVotes: {
-      type: Number,
+      type: [String],
     },
     votes: {
       type: Number,

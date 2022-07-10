@@ -91,7 +91,6 @@ const SigninForm: React.FC = () => {
               size="large"
               data-testid="signin-submit-button"
               loading={isSubmitting}
-              primary
               disabled={!(formik.isValid && formik.dirty)}
             >
               Zaloguj

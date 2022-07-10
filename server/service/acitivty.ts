@@ -53,4 +53,9 @@ export default class ActivityService {
     const result = await this.activityModel.create(newActivity);
     return { activity: result };
   }
+
+  public async like(id: string) {
+    const activity: IActivity = await this.activityModel.findOne({ _id: id });
+    // const isLiked = activity.
+  }
 }

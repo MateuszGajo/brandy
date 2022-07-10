@@ -57,4 +57,15 @@ export default (app: Router) => {
       res.status(200).send(activity);
     }
   );
+
+  route.put("/like", verifyAccessToken, async (req, res) => {
+    const activityInstance = Container.get(activityService);
+
+    const { activity } = await activityInstance.add({
+      text: req.body.text,
+      pictureUrl: res.locals.imageUrl,
+      userId: res.locals.user._id,
+    });
+    res.status(200).send(activity);
+  });
 };
