@@ -47,6 +47,7 @@ const ActivityDetails = () => {
         <CircularProgress />
       </Box>
     );
+  console.log(activity);
 
   return (
     <Box>
@@ -137,7 +138,7 @@ const ActivityDetails = () => {
                         fontSize="0.95rem"
                         color="#a1a1a1"
                       >
-                        {activity.comments.length}
+                        {activity.commentsCount}
                       </Typography>
                     </Box>
                   </Grid>
@@ -150,7 +151,7 @@ const ActivityDetails = () => {
       <Box height="30px" sx={{ backgroundColor: "#e1e1e1" }} />
 
       <List sx={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-        {activity.comments.map((commnect, index) => (
+        {activity.comments.map((comment, index) => (
           <Box
             width="600px"
             alignSelf={index % 2 === 0 ? "flex-end" : "inherit"}
@@ -173,7 +174,7 @@ const ActivityDetails = () => {
                       variant="body2"
                       color="text.primary"
                     >
-                      I'll be in your neighborhood doing errands this…
+                      {comment.text}
                     </Typography>
                   }
                 />

@@ -1,8 +1,15 @@
 import { Model, Document } from "mongoose";
+import {
+  IActivity,
+  ICreateActivity,
+  ICreateActivityService,
+} from "@/interfaces/IActivity";
+import { IUser, IUserLogin, IUserRegister } from "@/interfaces/IUser";
 
 declare global {
   namespace Models {
     export type UserModel = Model<IUser & Document>;
+    export type ActivityModel = Model<IActivity & Document, {}>;
   }
 }
 

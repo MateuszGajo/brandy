@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
+import CommentSchema from "./comment";
 
 const ActivitySchema = new Schema(
   {
-    userId: {
-      type: String,
-      required: [true, "Add userId reference"],
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     text: {
       type: String,
@@ -30,6 +31,7 @@ const ActivitySchema = new Schema(
       type: Date,
       required: [true, "Enter create date"],
     },
+    comments: [CommentSchema.schema],
   },
   { versionKey: false }
 );

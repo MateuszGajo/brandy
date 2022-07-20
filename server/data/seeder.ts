@@ -1,8 +1,9 @@
-const USER_NUMBER = 10;
 import users from "./users";
 import UserModel from "../models/user";
 import Logger from "../loaders/logger";
 import mongooseLoader from "../loaders/mongoose";
+
+const USER_NUMBER = 10;
 
 const importData = async (password: string) => {
   const userData = await users(password, USER_NUMBER);

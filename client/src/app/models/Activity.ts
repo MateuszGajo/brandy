@@ -1,13 +1,15 @@
 import { IUser } from "./User";
 
 export interface IActivity {
-  id: string;
+  _id: string;
   user: IUser;
-  title: string;
+  text: string;
   photo: string;
   commentCount: number;
-  likeCount: number;
+  downVotesCount: number;
+  upVotesCount: number;
   date: Date;
+  commentsCount: number;
 }
 
 export interface IActivityComment {
@@ -17,4 +19,10 @@ export interface IActivityComment {
 
 export interface IActivityDetails extends IActivity {
   comments: IActivityComment[];
+}
+
+export type IActivitySort = "top" | "new" | "hot";
+
+export interface IActivityFilters {
+  sort: IActivitySort;
 }

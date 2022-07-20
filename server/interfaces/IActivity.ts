@@ -5,11 +5,11 @@ export interface ICreateActivityService {
 }
 
 export interface ICreateActivity {
-  userId: string;
+  user: string;
   text: string;
   photo: string | undefined;
-  upVotes: number;
-  downVotes: number;
+  upVotes: string[];
+  downVotes: string[];
   votes: number;
   upVoteRatio: number;
   date: Date;
@@ -17,4 +17,10 @@ export interface ICreateActivity {
 
 export interface IActivity extends ICreateActivity {
   _id: string;
+}
+
+export interface IActivityFilers {
+  sortBy: "hot" | "top" | "new";
+  limit: number;
+  start: number;
 }

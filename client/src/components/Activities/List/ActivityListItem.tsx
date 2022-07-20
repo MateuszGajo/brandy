@@ -15,6 +15,7 @@ import { ImArrowUp, ImArrowDown } from "react-icons/im";
 import { FaRegCommentDots } from "react-icons/fa";
 import { red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { getDate } from "app/utils/Date";
 
 interface IProps {
   activity: IActivity;
@@ -32,8 +33,9 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
   };
 
   const onCommentClick = () => {
-    navigate(`/activity/${activity.id}`);
+    navigate(`/activity/${activity._id}`);
   };
+  const { year, month, day, hours, minutes } = getDate(new Date(activity.date));
 
   return (
     <Paper elevation={1}>
@@ -63,7 +65,7 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
               fontWeight="bold"
               fontSize="0.9rem"
             >
-              20
+              {activity.upVotesCount - activity.downVotesCount}
             </Typography>
             <IconButton
               sx={{
@@ -76,7 +78,7 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
           </Box>
         </Grid>
         <Grid item lg={11}>
-          <Box>
+          <Box mt={1}>
             <Box display="flex">
               <Box flexGrow="1" display="flex" alignItems="center" ml={2}>
                 <Avatar
@@ -87,24 +89,15 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                   }}
                 />
                 <Typography fontWeight="bold" fontSize="0.9rem" ml={0.5}>
-                  Danny
+                  {activity.user.nick}
                 </Typography>
                 <Typography ml={2} color="#a1a1a1" fontSize="0.9rem">
-                  Dodano 24/02/2020
+                  Dodano {day}/{month}/{year} {hours}:{minutes}
                 </Typography>
               </Box>
-              <Box>
-                <IconButton onClick={handleClick}>
-                  <MoreVertIcon />
-                </IconButton>
-                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                  <MenuItem>option</MenuItem>
-                  <MenuItem>option</MenuItem>
-                </Menu>
-              </Box>
             </Box>
-            <Box ml={2}>
-              <Typography fontWeight="600">Title tile tile</Typography>
+            <Box ml={2} mt={1}>
+              <Typography fontWeight="600">{activity.text}</Typography>
             </Box>
             <Box mt={0.5} display="flex" justifyContent="center">
               <Box

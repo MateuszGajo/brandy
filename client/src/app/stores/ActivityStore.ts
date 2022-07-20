@@ -1,76 +1,47 @@
-import { IActivity, IActivityDetails } from "app/models/Activity";
+import agent from "app/api/agent";
+import {
+  IActivity,
+  IActivityDetails,
+  IActivityFilters,
+} from "app/models/Activity";
+import { ConvertToParams } from "components/Activities/utils/ConvertToParams";
 import { makeAutoObservable } from "mobx";
-import { IoTennisball } from "react-icons/io5";
 
 export default class ActivityStore {
   constructor() {
     makeAutoObservable(this);
   }
 
-  activities: IActivity[] | null = [
-    {
-      id: "1",
-      user: {
-        nick: "Danny",
-      },
-      title: "New post",
-      photo:
-        "https://images.pexels.com/photos/1461974/pexels-photo-1461974.jpeg?cs=srgb&dl=pexels-nextvoyage-1461974.jpg&fm=jpg",
-      commentCount: 5,
-      likeCount: 10,
-      date: new Date(),
-    },
-    {
-      id: "2",
-      user: {
-        nick: "John",
-      },
-      title: "activity",
-      photo:
-        "https://iso.500px.com/wp-content/uploads/2016/03/stock-photo-142984111.jpg",
-      commentCount: 15,
-      likeCount: 0,
-      date: new Date(),
-    },
-  ];
-  activity: IActivityDetails | null = {
-    id: "1",
-    user: {
-      nick: "Danny",
-    },
-    title: "New post",
-    photo:
-      "https://images.pexels.com/photos/1461974/pexels-photo-1461974.jpeg?cs=srgb&dl=pexels-nextvoyage-1461974.jpg&fm=jpg",
-    commentCount: 5,
-    likeCount: 10,
-    date: new Date(),
-    comments: [
-      {
-        user: {
-          nick: "ruslav",
-        },
-        text: "Interesting",
-      },
-      {
-        user: {
-          nick: "daniel",
-        },
-        text: "lorem ipsum dolar",
-      },
-      {
-        user: {
-          nick: "John",
-        },
-        text: "vsdfdsa fdsaf  sd",
-      },
-    ],
+  activities: IActivity[] | null = [];
+  activity: IActivityDetails | null = null;
+  filters: IActivityFilters = {
+    sort: "hot",
   };
 
-  getActivity = (id: string) => {
-    return this.activities?.find((item) => item.id === id);
+  setFilters = (filters: IActivityFilters) => {
+    const newFilters = { ...this.filters, ...filters };
+    this.filters = newFilters;
+
+    this.loadActivities(newFilters);
   };
 
-  loadActivity = (id: string) => {
-    return "aa";
+  loadActivities = async (filters: IActivityFilters = this.filters) => {
+    const params = ConvertToParams(filters);
+    console.log(params.toString());
+    try {
+      const { data } = await agent.Activity.list(params);
+      this.activities = data;
+    } catch (err) {
+      console.log("Problem loading activites" + err);
+    }
+  };
+
+  loadActivity = async (id: string) => {
+    try {
+      const { data } = await agent.Activity.details(id);
+      this.activity = data;
+    } catch (err) {
+      console.log("Problem loading activites" + err);
+    }
   };
 }

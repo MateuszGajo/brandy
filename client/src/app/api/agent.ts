@@ -1,6 +1,8 @@
 import axios from "axios";
 import { store } from "app/provider/RootStoreProvider";
 import { ICreds } from "app/models/Authentication";
+import { IActivity, IActivityDetails } from "app/models/Activity";
+
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
 
@@ -36,7 +38,7 @@ axios.interceptors.response.use(
 );
 
 const requests = {
-  get: <T>(url: string) => axios.get<T>(url),
+  get: <T>(url: string, opt = {}) => axios.get<T>(url, opt),
   post: <T>(url: string, body: any) => axios.post<T>(url, body),
   put: <T>(url: string, body: any) => axios.put<T>(url, body),
   delete: <T>(url: string) => axios.delete<T>(url),
@@ -47,4 +49,10 @@ const Auth = {
   register: (creds: ICreds) => requests.post("/auth/signup", creds),
 };
 
-export default { Auth };
+const Activity = {
+  list: (params: URLSearchParams) =>
+    requests.get<IActivity[]>("/activity", { params }),
+  details: (id: string) => requests.get<IActivityDetails>(`/activity/${id}`),
+};
+
+export default { Auth, Activity };
