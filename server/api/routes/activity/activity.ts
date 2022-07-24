@@ -23,7 +23,8 @@ export default (app: Router) => {
     const logger: Logger = Container.get("logger");
     logger.debug(`Calling get activity endpoint}`);
 
-    const { start, limit, sortBy } = res.locals.filters as IActivityFilers;
+    const { start, limit, sortBy, search } = res.locals
+      .filters as IActivityFilers;
     const activityInstance = Container.get(activityService);
 
     const activity = await activityInstance.list(
@@ -31,6 +32,7 @@ export default (app: Router) => {
         start,
         limit,
         sortBy,
+        search,
       },
       res.locals.user?._id
     );

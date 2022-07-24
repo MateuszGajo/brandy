@@ -18,6 +18,17 @@ export default class AuthenticationStore {
     console.log("logout");
   };
 
+  verify = async () => {
+    try {
+      await agent.Auth.verify();
+      runInAction(() => {
+        this.isAuthenticated = true;
+      });
+    } catch (err) {
+      console.log("Invalid token");
+    }
+  };
+
   login = async (creds: ICreds) => {
     this.loginError = "";
     this.isSubmitting = true;

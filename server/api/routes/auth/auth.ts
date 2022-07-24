@@ -69,6 +69,10 @@ export default (app: Router) => {
     }
   });
 
+  route.get("/verify", verifyAccessToken, async (req, res) => {
+    return res.status(200).send("Token is valid");
+  });
+
   route.get("/refresh", async (req, res) => {
     const logger: Logger = Container.get("logger");
     logger.debug(`Refreshing token: ${req.body}`);

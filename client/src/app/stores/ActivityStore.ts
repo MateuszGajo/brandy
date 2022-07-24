@@ -4,7 +4,8 @@ import {
   IActivityDetails,
   IActivityFilters,
 } from "app/models/Activity";
-import { ConvertToParams } from "components/Activities/utils/ConvertToParams";
+import { ICreateComment } from "app/models/Comment";
+import { ConvertToParams } from "features/Activities/utils/ConvertToParams";
 import { makeAutoObservable } from "mobx";
 
 export default class ActivityStore {
@@ -16,6 +17,7 @@ export default class ActivityStore {
   activity: IActivityDetails | null = null;
   filters: IActivityFilters = {
     sort: "hot",
+    search: "",
   };
 
   setFilters = (filters: IActivityFilters) => {
@@ -42,6 +44,14 @@ export default class ActivityStore {
       this.activity = data;
     } catch (err) {
       console.log("Problem loading activites" + err);
+    }
+  };
+
+  addComment = async (newComment: ICreateComment, activityId: string) => {
+    try {
+      await agent.Comment.add(activityId, newComment);
+    } catch (err) {
+      console.log("Problem adding comment" + err);
     }
   };
 }

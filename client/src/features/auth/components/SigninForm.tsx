@@ -8,6 +8,7 @@ import {
   Box,
   CssBaseline,
   FormHelperText,
+  Button,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LockIcon from "@mui/icons-material/Lock";
@@ -17,6 +18,7 @@ import styles from "./styles/SigninForm.style";
 import { useAuthenticationStore } from "app/provider/RootStoreProvider";
 import { ICreds } from "app/models/Authentication";
 import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   email: yup.string().required("Wpisz email").email("Wpisz poprawny email"),
@@ -27,10 +29,13 @@ const schema = yup.object({
 });
 
 const SigninForm: React.FC = () => {
+  const navigate = useNavigate();
   const { login, loginError, isSubmitting } = useAuthenticationStore();
 
   const handleSubmit = (values: ICreds) => {
-    login(values);
+    login(values).then(() => {
+      navigate("/");
+    });
   };
 
   const formik = useFormik({
@@ -84,17 +89,15 @@ const SigninForm: React.FC = () => {
               </FormHelperText>
             ) : null}
 
-            <LoadingButton
+            <Button
               variant="contained"
               type="submit"
               fullWidth
-              size="large"
               data-testid="signin-submit-button"
-              loading={isSubmitting}
               disabled={!(formik.isValid && formik.dirty)}
             >
               Zaloguj
-            </LoadingButton>
+            </Button>
           </Box>
         </Box>
       </Container>

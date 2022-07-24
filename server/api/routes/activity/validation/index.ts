@@ -38,19 +38,21 @@ export const loadActivityValidator = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { start, limit, sortBy } = req.query;
+  const { start, limit, sort, search } = req.query;
+  console.log(req.query);
   try {
     const startNumber = Number(start);
     const limitNumber = Number(limit);
     if (start && limitNumber && (startNumber < 0 || limitNumber < 0))
       throw new Error("start and limit numbers have to be positive");
-    if (sortBy && sortBy !== "hot" && sortBy !== "new" && sortBy !== "top") {
+    if (sort && sort !== "hot" && sort !== "new" && sort !== "top") {
       throw new Error("Wrong type of sortby");
     }
     res.locals.filters = {
       start: startNumber || 0,
       limit: limitNumber || 10,
-      sortBy: sortBy || "hot",
+      sortBy: sort || "hot",
+      search: search || "",
     };
     next();
   } catch (error) {

@@ -24,5 +24,6 @@ export interface IActivityDetails extends IActivity {
 export type IActivitySort = "top" | "new" | "hot";
 
 export interface IActivityFilters {
-  sort: IActivitySort;
+  sort?: IActivitySort;
+  search?: string;
 }

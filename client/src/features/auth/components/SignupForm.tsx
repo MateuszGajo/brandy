@@ -8,6 +8,7 @@ import {
   Box,
   CssBaseline,
   FormHelperText,
+  Button,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LockIcon from "@mui/icons-material/Lock";
@@ -131,17 +132,15 @@ const SigninForm: React.FC = () => {
               </FormHelperText>
             ) : null}
 
-            <LoadingButton
+            <Button
               variant="contained"
               type="submit"
               fullWidth
-              size="large"
               data-testid="signin-submit-button"
-              loading={isSubmitting}
               disabled={!(formik.isValid && formik.dirty)}
             >
               Zarejstruj
-            </LoadingButton>
+            </Button>
           </form>
         </Box>
       </Container>

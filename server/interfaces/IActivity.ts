@@ -23,4 +23,5 @@ export interface IActivityFilers {
   sortBy: "hot" | "top" | "new";
   limit: number;
   start: number;
+  search: string;
 }

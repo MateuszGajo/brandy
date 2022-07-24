@@ -21,7 +21,10 @@ export default class ActivityService {
     @Inject("logger") private logger: Logger
   ) {}
 
-  public async list({ start, limit, sortBy }: IActivityFilers, userId: string) {
+  public async list(
+    { start, limit, sortBy, search }: IActivityFilers,
+    userId: string
+  ) {
     const sortObj = {
       hot: { upVotesRatio: -1 },
       new: { date: -1 },
@@ -30,7 +33,7 @@ export default class ActivityService {
 
     const activities = await this.activityModel
       .find(
-        {},
+        { text: { $regex: search } },
         {
           upVotesCount: { $size: "$upVotes" },
           text: 1,
@@ -123,6 +126,11 @@ export default class ActivityService {
           },
         }
       )
+      .populate({
+        path: "user",
+        model: "User",
+        select: "nick email role",
+      })
       .populate({
         path: "comments",
         populate: { path: "user", model: "User", select: "nick email role" },
