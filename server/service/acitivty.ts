@@ -26,10 +26,13 @@ export default class ActivityService {
     userId: string
   ) {
     const sortObj = {
-      hot: { upVotesRatio: -1 },
+      hot: { upVoteRatio: -1 },
       new: { date: -1 },
-      top: { votes: -1 },
+      top: { upVotes: -1 },
     };
+
+    console.log("sortby");
+    console.log(sortObj[sortBy]);
 
     const activities = await this.activityModel
       .find(
@@ -52,7 +55,7 @@ export default class ActivityService {
                       0,
                     ],
                   },
-                  then: "upVote",
+                  then: "upvote",
                 },
                 {
                   case: {
@@ -63,7 +66,7 @@ export default class ActivityService {
                       0,
                     ],
                   },
-                  then: "downVote",
+                  then: "downvote",
                 },
               ],
               default: null,
@@ -102,7 +105,7 @@ export default class ActivityService {
                       0,
                     ],
                   },
-                  then: "upVote",
+                  then: "upvote",
                 },
                 {
                   case: {
@@ -113,7 +116,7 @@ export default class ActivityService {
                       0,
                     ],
                   },
-                  then: "downVote",
+                  then: "downvote",
                 },
               ],
               default: null,
@@ -186,6 +189,7 @@ export default class ActivityService {
         downVotesLength: { $size: "$downVotes" },
       });
     const activity = activities[0];
+    console.log(typeof activity.upVoteLength);
 
     if (!activity) throw new APIError("Activity doesn't exist", 404);
 
@@ -193,7 +197,7 @@ export default class ActivityService {
       const upVotes = activity.upVoteLength - 1;
       const downVotes = activity.downVotesLength;
       const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes;
+      const upVoteRatio = upVotes / allVotes || 0;
       await this.activityModel.findOneAndUpdate(
         { _id: new ObjectId(id) },
         {
@@ -267,7 +271,7 @@ export default class ActivityService {
       const downVotes = activity.downVotesLength - 1;
       const upVotes = activity.upVoteLength;
       const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes;
+      const upVoteRatio = upVotes / allVotes || 0;
       await this.activityModel.findOneAndUpdate(
         { _id: new ObjectId(id) },
         {

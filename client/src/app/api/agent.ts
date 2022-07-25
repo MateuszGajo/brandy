@@ -8,7 +8,7 @@ import { request } from "http";
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
 
-let isRefreshing = false;
+// let isRefreshing = false;
 
 axios.interceptors.response.use(
   (response) => {
@@ -18,25 +18,25 @@ axios.interceptors.response.use(
     const statusCode = error.response.status || null;
     const originalRequest = error.config;
 
-    const userLogout = () => {
-      store.authenticationStore.logout();
-    };
+    // const userLogout = () => {
+    //   store.authenticationStore.logout();
+    // };
 
-    const refreshToken = () => {
-      axios
-        .get("auth/refresh")
-        .catch(userLogout)
-        .finally(() => {
-          isRefreshing = false;
-        });
-    };
+    // const refreshToken = () => {
+    //   axios
+    //     .get("auth/refresh")
+    //     .catch(userLogout)
+    //     .finally(() => {
+    //       isRefreshing = false;
+    //     });
+    // };
 
-    if (statusCode === 401 && originalRequest.url === "auth/token/refresh")
-      userLogout();
-    else if (statusCode === 401 && !isRefreshing) {
-      isRefreshing = true;
-      refreshToken();
-    }
+    // if (statusCode === 401 && originalRequest.url === "auth/token/refresh")
+    //   userLogout();
+    // else if (statusCode === 401 && !isRefreshing) {
+    //   isRefreshing = true;
+    //   refreshToken();
+    // }
 
     return Promise.reject(error);
   }
@@ -53,12 +53,16 @@ const Auth = {
   login: (creds: ICreds) => requests.post("/auth/signin", creds),
   register: (creds: ICreds) => requests.post("/auth/signup", creds),
   verify: () => requests.get("/auth/verify"),
+  logout: () => requests.get("/auth/logout"),
 };
 
 const Activity = {
   list: (params: URLSearchParams) =>
     requests.get<IActivity[]>("/activity", { params }),
   details: (id: string) => requests.get<IActivityDetails>(`/activity/${id}`),
+  create: (activity: FormData) => requests.post("/activity/add", activity),
+  upvote: (id: string) => requests.put(`/activity/${id}/upvote`),
+  downvote: (id: string) => requests.put(`/activity/${id}/downvote`),
 };
 
 const Comment = {

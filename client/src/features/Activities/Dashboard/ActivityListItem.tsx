@@ -3,19 +3,17 @@ import {
   Box,
   Grid,
   IconButton,
-  Menu,
-  MenuItem,
   Paper,
   Typography,
 } from "@mui/material";
 import { IActivity } from "app/models/Activity";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import React from "react";
 import { ImArrowUp, ImArrowDown } from "react-icons/im";
 import { FaRegCommentDots } from "react-icons/fa";
-import { red } from "@mui/material/colors";
+import { green, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "app/utils/Date";
+import { useActivityStore } from "app/provider/RootStoreProvider";
 
 interface IProps {
   activity: IActivity;
@@ -23,14 +21,7 @@ interface IProps {
 
 const ActivityListItem: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { upvoteActivity, downvoteActivity } = useActivityStore();
 
   const onCommentClick = () => {
     navigate(`/activity/${activity._id}`);
@@ -53,10 +44,14 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
             <IconButton
               sx={{
                 color: "#c1c1c1",
-                "&:hover": { color: (theme) => theme.palette.primary.main },
+                "&:hover": { color: green[500] },
               }}
+              onClick={() => upvoteActivity(activity._id)}
             >
-              <ImArrowUp size={23} />
+              <ImArrowUp
+                size={23}
+                color={activity.yourVote === "upvote" ? green[500] : undefined}
+              />
             </IconButton>
             <Typography
               variant="body1"
@@ -72,8 +67,12 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                 color: "#c1c1c1",
                 "&:hover": { color: red[400] },
               }}
+              onClick={() => downvoteActivity(activity._id)}
             >
-              <ImArrowDown size={23} />
+              <ImArrowDown
+                size={23}
+                color={activity.yourVote === "downvote" ? "red" : undefined}
+              />
             </IconButton>
           </Box>
         </Grid>

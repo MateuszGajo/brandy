@@ -1,3 +1,4 @@
+import { IComment } from "./Comment";
 import { IUser } from "./User";
 
 export interface IActivity {
@@ -10,15 +11,11 @@ export interface IActivity {
   upVotesCount: number;
   date: Date;
   commentsCount: number;
-}
-
-export interface IActivityComment {
-  user: IUser;
-  text: string;
+  yourVote: "upvote" | "downvote" | null;
 }
 
 export interface IActivityDetails extends IActivity {
-  comments: IActivityComment[];
+  comments: IComment[];
 }
 
 export type IActivitySort = "top" | "new" | "hot";
@@ -26,4 +23,9 @@ export type IActivitySort = "top" | "new" | "hot";
 export interface IActivityFilters {
   sort?: IActivitySort;
   search?: string;
+}
+
+export interface ICreateActivity {
+  text: string;
+  image?: File;
 }

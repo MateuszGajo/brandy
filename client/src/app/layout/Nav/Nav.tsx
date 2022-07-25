@@ -1,3 +1,4 @@
+import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import {
   AppBar,
@@ -28,7 +29,7 @@ const Nav = () => {
   const pathname = location.pathname;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const { isAuthenticated } = useAuthenticationStore();
+  const { isAuthenticated, logout } = useAuthenticationStore();
   const { setFilters } = useActivityStore();
 
   const searchTimeout = (ms: number) => {
@@ -143,6 +144,12 @@ const Nav = () => {
                     Create post
                   </MenuItem>
                 </Link>
+                <MenuItem onClick={logout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
               </Menu>
             </>
           ) : (

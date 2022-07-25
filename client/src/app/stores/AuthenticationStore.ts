@@ -13,9 +13,15 @@ export default class AuthenticationStore {
   registerError = "";
   isSubmitting = false;
   isAuthenticated = false;
+  isLoading = true;
 
-  logout = () => {
-    console.log("logout");
+  logout = async () => {
+    try {
+      await agent.Auth.logout();
+      this.isAuthenticated = false;
+    } catch (err) {
+      console.log("problem with logout" + err);
+    }
   };
 
   verify = async () => {
@@ -26,6 +32,8 @@ export default class AuthenticationStore {
       });
     } catch (err) {
       console.log("Invalid token");
+    } finally {
+      this.isLoading = false;
     }
   };
 
