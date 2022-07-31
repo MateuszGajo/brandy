@@ -23,4 +23,4 @@ const CommentSchema = new Schema(
   { versionKey: false }
 );
 
-export default model("comment", CommentSchema);
+export default model("Comment", CommentSchema);

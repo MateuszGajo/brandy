@@ -13,7 +13,11 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { green, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { getDate } from "app/utils/Date";
-import { useActivityStore } from "app/provider/RootStoreProvider";
+import {
+  useActivityStore,
+  useAuthenticationStore,
+} from "app/provider/RootStoreProvider";
+import { observer } from "mobx-react-lite";
 
 interface IProps {
   activity: IActivity;
@@ -21,6 +25,7 @@ interface IProps {
 
 const ActivityListItem: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthenticationStore();
   const { upvoteActivity, downvoteActivity } = useActivityStore();
 
   const onCommentClick = () => {
@@ -46,6 +51,7 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                 color: "#c1c1c1",
                 "&:hover": { color: green[500] },
               }}
+              disabled={!isAuthenticated}
               onClick={() => upvoteActivity(activity._id)}
             >
               <ImArrowUp
@@ -67,6 +73,7 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                 color: "#c1c1c1",
                 "&:hover": { color: red[400] },
               }}
+              disabled={!isAuthenticated}
               onClick={() => downvoteActivity(activity._id)}
             >
               <ImArrowDown
@@ -133,4 +140,4 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
   );
 };
 
-export default ActivityListItem;
+export default observer(ActivityListItem);

@@ -18,6 +18,7 @@ export default ({ expressApp }: { expressApp: Application }) => {
     name: "activityModel",
     model: require("../models/activity").default,
   };
+
   dependancyInjector({
     models: [userModel, activityModel],
   });

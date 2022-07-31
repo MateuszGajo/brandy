@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import * as yup from "yup";
 
 const commentSchema = yup.object({
-  comment: yup.string().required("Uzupełnij to pole"),
+  text: yup.string().required("Uzupełnij to pole"),
 });
 
 const ActivityCommentForm = () => {
@@ -18,12 +18,13 @@ const ActivityCommentForm = () => {
   const { addComment } = useActivityStore();
 
   const handleSubmit = (values: ICreateComment) => {
+    console.log("halo");
     addComment(values, id);
   };
 
   const formik = useFormik({
     initialValues: {
-      comment: "",
+      text: "",
     },
     validationSchema: commentSchema,
     onSubmit: handleSubmit,
@@ -38,8 +39,17 @@ const ActivityCommentForm = () => {
       }}
       onSubmit={formik.handleSubmit}
     >
-      <TextField variant="outlined" fullWidth placeholder="Napisz komentarz" />
-      <Button variant="outlined" sx={{ mt: 1 }}>
+      <TextField
+        variant="outlined"
+        fullWidth
+        placeholder="Napisz komentarz"
+        name="text"
+        onChange={formik.handleChange}
+        value={formik.values.text}
+        error={!!formik.errors.text}
+        helperText={formik.errors.text}
+      />
+      <Button variant="outlined" sx={{ mt: 1 }} type="submit">
         Wyślij
       </Button>
     </Box>

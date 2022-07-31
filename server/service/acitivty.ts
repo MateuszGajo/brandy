@@ -10,7 +10,6 @@ import {
   ICreateActivityCommentService,
 } from "@/interfaces/IComments";
 import { ObjectId } from "mongodb";
-import { pipeline } from "stream";
 import { Inject, Service } from "typedi";
 import { Logger } from "winston";
 
@@ -31,54 +30,83 @@ export default class ActivityService {
       top: { upVotes: -1 },
     };
 
-    console.log("sortby");
-    console.log(sortObj[sortBy]);
-
-    const activities = await this.activityModel
-      .find(
-        { text: { $regex: search } },
-        {
-          upVotesCount: { $size: "$upVotes" },
-          text: 1,
-          photo: 1,
-          downVotesCount: { $size: "$downVotes" },
-          date: 1,
-          upVoteRatio: 1,
-          votes: 1,
-          yourVote: {
-            $switch: {
-              branches: [
-                {
-                  case: {
-                    $gt: [
-                      { $size: { $setIntersection: ["$upVotes", [userId]] } },
-                      0,
-                    ],
-                  },
-                  then: "upvote",
-                },
-                {
-                  case: {
-                    $gt: [
-                      {
-                        $size: { $setIntersection: ["$downVotes", [userId]] },
-                      },
-                      0,
-                    ],
-                  },
-                  then: "downvote",
-                },
-              ],
-              default: null,
-            },
+    const activities = await this.activityModel.aggregate([
+      {
+        $match: {
+          ...(search
+            ? { $text: { $search: search, $caseSensitive: false } }
+            : {}),
+        },
+      },
+      {
+        $sort: sortObj[sortBy],
+      },
+      { $skip: start },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "votes",
+          let: {
+            activity_id: "$_id",
           },
-          commentCount: { $size: "$comments" },
-        }
-      )
-      .populate({ path: "user", model: "User", select: " nick email role" })
-      .sort(sortObj[sortBy])
-      .skip(start)
-      .limit(limit);
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: ["$activity", "$$activity_id"],
+                    },
+                    {
+                      $eq: ["$user", new ObjectId(userId)],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $project: {
+                type: 1,
+              },
+            },
+          ],
+          as: "voteObj",
+        },
+      },
+      {
+        $unwind: {
+          path: "$voteObj",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $set: {
+          yourVote: {
+            $ifNull: ["$voteObj.type", null],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: { user_id: "$user" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+            { $project: { nick: 1, email: 1, role: 1 } },
+          ],
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $project: {
+          voteObj: 0,
+        },
+      },
+    ]);
 
     return activities;
   }
@@ -86,7 +114,8 @@ export default class ActivityService {
   public async details(activityId: string, userId: string) {
     const activity = await this.activityModel
       .find(
-        { _id: activityId },
+        { _id: new ObjectId(activityId) },
+
         {
           upVotesCount: { $size: "$upVotes" },
           text: 1,
@@ -126,6 +155,7 @@ export default class ActivityService {
           comments: {
             text: 1,
             user: 1,
+            date: 1,
           },
         }
       )
@@ -322,7 +352,7 @@ export default class ActivityService {
 
     await this.activityModel.updateOne(
       { _id: comment.activityId },
-      { $push: { comments: newComment } }
+      { $push: { comments: { $each: [newComment], $position: 0 } } }
     );
   }
 }

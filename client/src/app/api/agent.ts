@@ -67,7 +67,7 @@ const Activity = {
 
 const Comment = {
   add: (activityId: string, comment: ICreateComment) =>
-    requests.get(`/activity/${activityId}/addComment`, comment),
+    requests.post(`/activity/${activityId}/addComment`, comment),
 };
 
 export default { Auth, Activity, Comment };

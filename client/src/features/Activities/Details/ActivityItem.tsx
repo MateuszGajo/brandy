@@ -6,9 +6,14 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { red } from "@mui/material/colors";
+import { green, red } from "@mui/material/colors";
 import { IActivityDetails } from "app/models/Activity";
+import {
+  useActivityStore,
+  useAuthenticationStore,
+} from "app/provider/RootStoreProvider";
 import { getDate } from "app/utils/Date";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { FaRegCommentDots } from "react-icons/fa";
 import { ImArrowDown, ImArrowUp } from "react-icons/im";
@@ -18,6 +23,8 @@ interface IProps {
 }
 
 const ActivityItem = ({ activity }: IProps) => {
+  const { upvoteActivity, downvoteActivity } = useActivityStore();
+  const { isAuthenticated } = useAuthenticationStore();
   const { year, month, day, hours, minutes } = getDate(new Date(activity.date));
   return (
     <Paper elevation={1}>
@@ -35,10 +42,15 @@ const ActivityItem = ({ activity }: IProps) => {
             <IconButton
               sx={{
                 color: "#c1c1c1",
-                "&:hover": { color: (theme) => theme.palette.primary.main },
+                "&:hover": { color: green[500] },
               }}
+              onClick={() => upvoteActivity(activity._id)}
+              disabled={!isAuthenticated}
             >
-              <ImArrowUp size={23} />
+              <ImArrowUp
+                size={23}
+                color={activity.yourVote === "upvote" ? green[500] : undefined}
+              />
             </IconButton>
             <Typography
               variant="body1"
@@ -54,8 +66,13 @@ const ActivityItem = ({ activity }: IProps) => {
                 color: "#c1c1c1",
                 "&:hover": { color: red[400] },
               }}
+              disabled={!isAuthenticated}
+              onClick={() => downvoteActivity(activity._id)}
             >
-              <ImArrowDown size={23} />
+              <ImArrowDown
+                size={23}
+                color={activity.yourVote === "downvote" ? "red" : undefined}
+              />
             </IconButton>
           </Box>
         </Grid>
@@ -92,7 +109,7 @@ const ActivityItem = ({ activity }: IProps) => {
             <Grid container ml={2}>
               <Grid item md={6}>
                 <Box display="flex" alignItems="center">
-                  <IconButton>
+                  <IconButton disabled={true}>
                     <FaRegCommentDots />
                   </IconButton>
                   <Typography
@@ -112,4 +129,4 @@ const ActivityItem = ({ activity }: IProps) => {
   );
 };
 
-export default ActivityItem;
+export default observer(ActivityItem);

@@ -1,10 +1,11 @@
 import { IUser } from "./User";
 
 export interface ICreateComment {
-  comment: string;
+  text: string;
 }
 
 export interface IComment {
   user: IUser;
   text: string;
+  date: Date;
 }
