@@ -17,22 +17,6 @@ export const addActivityValidator = async (
   }
 };
 
-export const addActivityCommentValidator = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const schema = yup.object({
-    text: yup.string().required("Text is required"),
-  });
-  try {
-    await schema.validate(req.body);
-    next();
-  } catch (e) {
-    if (e instanceof Error) return res.status(400).json(e.message);
-  }
-};
-
 export const loadActivityValidator = async (
   req: Request,
   res: Response,

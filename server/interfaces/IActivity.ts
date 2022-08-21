@@ -8,8 +8,8 @@ export interface ICreateActivity {
   user: string;
   text: string;
   photo: string | undefined;
-  upVotes: string[];
-  downVotes: string[];
+  upVotesCount: number;
+  downVotesCount: number;
   votes: number;
   upVoteRatio: number;
   date: Date;

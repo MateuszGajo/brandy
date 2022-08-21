@@ -26,7 +26,7 @@ interface IProps {
 const ActivityListItem: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthenticationStore();
-  const { upvoteActivity, downvoteActivity } = useActivityStore();
+  const { updateVoteOnActivities } = useActivityStore();
 
   const onCommentClick = () => {
     navigate(`/activity/${activity._id}`);
@@ -52,11 +52,11 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                 "&:hover": { color: green[500] },
               }}
               disabled={!isAuthenticated}
-              onClick={() => upvoteActivity(activity._id)}
+              onClick={() => updateVoteOnActivities("up", activity._id)}
             >
               <ImArrowUp
                 size={23}
-                color={activity.yourVote === "upvote" ? green[500] : undefined}
+                color={activity.userVote === "up" ? green[500] : undefined}
               />
             </IconButton>
             <Typography
@@ -74,11 +74,11 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                 "&:hover": { color: red[400] },
               }}
               disabled={!isAuthenticated}
-              onClick={() => downvoteActivity(activity._id)}
+              onClick={() => updateVoteOnActivities("down", activity._id)}
             >
               <ImArrowDown
                 size={23}
-                color={activity.yourVote === "downvote" ? "red" : undefined}
+                color={activity.userVote === "down" ? "red" : undefined}
               />
             </IconButton>
           </Box>

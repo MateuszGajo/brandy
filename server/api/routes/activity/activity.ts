@@ -4,11 +4,7 @@ import { Logger } from "winston";
 import activityService from "../../../service/acitivty";
 import multer from "multer";
 import { uploadPhoto } from "@/api/helpers/cloudinary";
-import {
-  addActivityValidator,
-  loadActivityValidator,
-  addActivityCommentValidator,
-} from "./validation";
+import { addActivityValidator, loadActivityValidator } from "./validation";
 import verifyAccessToken from "@/api/helpers/verifyAccessToken";
 import { isAPIError } from "@/api/Error/interface";
 import { IActivityFilers } from "@/interfaces/IActivity";
@@ -99,32 +95,4 @@ export default (app: Router) => {
       return res.status(500).json("Problem with downvote activity");
     }
   });
-
-  route.post(
-    "/:id/addComment",
-    verifyAccessToken,
-    addActivityCommentValidator,
-    async (req, res) => {
-      const { id } = req.params;
-      try {
-        const activityInstance = Container.get(activityService);
-        const user = res.locals.user;
-
-        await activityInstance.addComment({
-          activityId: id,
-          userId: user._id,
-          text: req.body.text,
-        });
-        console.log("before send response");
-        return res.status(200).json("Comment has been added");
-      } catch (err) {
-        console.log("error");
-        console.log(err);
-        if (isAPIError(err)) {
-          return res.status(err.code).send(err.message);
-        }
-        return res.status(500).json("Problem with adding comment");
-      }
-    }
-  );
 };

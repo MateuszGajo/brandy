@@ -35,18 +35,29 @@ const ActivitySchema = new Schema(
     },
   },
   {
-    toJSON: { virtuals: true },
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        ret.userVote = ret.userVote?.type || null;
+      },
+    },
+    toObject: {
+      virtuals: true,
+    },
     versionKey: false,
   }
 );
+
 ActivitySchema.index({ upVoteRatio: -1 });
 ActivitySchema.index({ date: -1 });
 ActivitySchema.index({ upVotes: -1 });
 ActivitySchema.index({ text: "text" });
 
-ActivitySchema.pre(/find/, () => {
-  console.log("hallo");
-  (this as any).populate({ path: "user", select: "nick email role" });
+ActivitySchema.virtual("userVote", {
+  ref: "Vote",
+  localField: "_id",
+  foreignField: "activity",
+  justOne: true,
 });
 
 export default model("Activity", ActivitySchema);

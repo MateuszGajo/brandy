@@ -1,18 +1,18 @@
 import { List } from "@mui/material";
-import { IActivityDetails } from "app/models/Activity";
+import { IActivity } from "app/models/Activity";
 import React from "react";
 import ActivityCommentListItem from "./ActivityCommentListItem";
 
 interface IProps {
-  activity: IActivityDetails;
+  activity: IActivity;
 }
 
 const ActivityCommentList = ({ activity }: IProps) => {
   return (
     <List sx={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-      {activity.comments.map((comment, index) => (
+      {/* {activity?.comments?.map((comment, index) => (
         <ActivityCommentListItem comment={comment} index={index} />
-      ))}
+      ))} */}
     </List>
   );
 };

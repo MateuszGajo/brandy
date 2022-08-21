@@ -1,7 +1,7 @@
 import axios from "axios";
 import { store } from "app/provider/RootStoreProvider";
 import { ICreds } from "app/models/Authentication";
-import { IActivity, IActivityDetails } from "app/models/Activity";
+import { IActivity } from "app/models/Activity";
 import { ICreateComment } from "app/models/Comment";
 import { request } from "http";
 
@@ -59,7 +59,7 @@ const Auth = {
 const Activity = {
   list: (params: URLSearchParams) =>
     requests.get<IActivity[]>("/activity", { params }),
-  details: (id: string) => requests.get<IActivityDetails>(`/activity/${id}`),
+  details: (id: string) => requests.get<IActivity>(`/activity/${id}`),
   create: (activity: FormData) => requests.post("/activity/add", activity),
   upvote: (id: string) => requests.put(`/activity/${id}/upvote`),
   downvote: (id: string) => requests.put(`/activity/${id}/downvote`),

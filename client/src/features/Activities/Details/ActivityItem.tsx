@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { green, red } from "@mui/material/colors";
-import { IActivityDetails } from "app/models/Activity";
+import { IActivity } from "app/models/Activity";
 import {
   useActivityStore,
   useAuthenticationStore,
@@ -19,11 +19,11 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { ImArrowDown, ImArrowUp } from "react-icons/im";
 
 interface IProps {
-  activity: IActivityDetails;
+  activity: IActivity;
 }
 
 const ActivityItem = ({ activity }: IProps) => {
-  const { upvoteActivity, downvoteActivity } = useActivityStore();
+  const { updateVoteOnActivity } = useActivityStore();
   const { isAuthenticated } = useAuthenticationStore();
   const { year, month, day, hours, minutes } = getDate(new Date(activity.date));
   return (
@@ -44,12 +44,12 @@ const ActivityItem = ({ activity }: IProps) => {
                 color: "#c1c1c1",
                 "&:hover": { color: green[500] },
               }}
-              onClick={() => upvoteActivity(activity._id)}
+              onClick={() => updateVoteOnActivity("up")}
               disabled={!isAuthenticated}
             >
               <ImArrowUp
                 size={23}
-                color={activity.yourVote === "upvote" ? green[500] : undefined}
+                color={activity.userVote === "up" ? green[500] : undefined}
               />
             </IconButton>
             <Typography
@@ -67,11 +67,11 @@ const ActivityItem = ({ activity }: IProps) => {
                 "&:hover": { color: red[400] },
               }}
               disabled={!isAuthenticated}
-              onClick={() => downvoteActivity(activity._id)}
+              onClick={() => updateVoteOnActivity("down")}
             >
               <ImArrowDown
                 size={23}
-                color={activity.yourVote === "downvote" ? "red" : undefined}
+                color={activity.userVote === "down" ? "red" : undefined}
               />
             </IconButton>
           </Box>

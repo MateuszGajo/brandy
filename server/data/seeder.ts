@@ -7,7 +7,7 @@ import VoteModel from "../models/vote";
 import Logger from "../loaders/logger";
 import mongoose from "mongoose";
 
-const USER_NUMBER = 50;
+const USER_NUMBER = 10;
 
 const importData = async (password: string) => {
   const userData = await users(password, USER_NUMBER);
@@ -16,7 +16,7 @@ const importData = async (password: string) => {
     const users = await UserModel.insertMany(userData);
     const usersIds = users.map((user) => String(user._id));
 
-    const activityData = activities(usersIds, 10000);
+    const activityData = activities(usersIds, 10);
     const activitiesResponse = await ActivityModel.insertMany(activityData);
     const activitisIds = activitiesResponse.map((activity) =>
       String(activity._id)
@@ -34,6 +34,7 @@ const deleteData = async () => {
   try {
     await UserModel.deleteMany({});
     await ActivityModel.deleteMany({});
+    await VoteModel.deleteMany({});
     Logger.info("Data deleted successfully");
   } catch (err) {
     Logger.error(err);

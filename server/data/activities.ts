@@ -1,7 +1,11 @@
 import { ObjectId } from "mongodb";
 import faker from "@faker-js/faker";
+import { IActivity, ICreateActivity } from "@/interfaces/IActivity";
 
-export default (userIds: string[], activityNumber: number) => {
+export default (
+  userIds: string[],
+  activityNumber: number
+): ICreateActivity[] => {
   return Array.from(new Array(activityNumber)).map(() => {
     const randomUserIndex = Math.floor(Math.random() * userIds.length);
     const userId = userIds[randomUserIndex];
@@ -29,15 +33,14 @@ export default (userIds: string[], activityNumber: number) => {
     const votes = upVotes.length + downVotes.length;
     const upVoteRatio = upVotes.length / votes;
     return {
-      user: new ObjectId(userId),
+      user: userId,
       text: faker.random.words(10),
       photo,
-      upVotes,
-      downVotes,
+      upVotesCount: upVotes.length,
+      downVotesCount: downVotes.length,
       votes,
       upVoteRatio,
       date: new Date(),
-      comments: [],
     };
   });
 };

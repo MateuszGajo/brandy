@@ -1,5 +1,6 @@
 import { IComment } from "./Comment";
 import { IUser } from "./User";
+import { IVote } from "./Vote";
 
 export interface IActivity {
   _id: string;
@@ -11,11 +12,7 @@ export interface IActivity {
   upVotesCount: number;
   date: Date;
   commentsCount: number;
-  yourVote: "upvote" | "downvote" | null;
-}
-
-export interface IActivityDetails extends IActivity {
-  comments: IComment[];
+  userVote: IVote;
 }
 
 export type IActivitySort = "top" | "new" | "hot";

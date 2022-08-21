@@ -5,11 +5,15 @@ import {
   ICreateActivityService,
 } from "@/interfaces/IActivity";
 import { IUser, IUserLogin, IUserRegister } from "@/interfaces/IUser";
+import { IVote } from "@/interfaces/IVote";
+import ActivityModel from "models/activity";
 
 declare global {
   namespace Models {
     export type UserModel = Model<IUser & Document>;
-    export type ActivityModel = Model<IActivity & Document, {}>;
+    export type ActivityModel = Model<IActivity & Document>;
+    export type CommentModel = Model<IComment & Document>;
+    export type VoteModel = Model<IVote & Document, {}>;
   }
 }
 

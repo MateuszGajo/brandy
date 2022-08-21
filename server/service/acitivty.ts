@@ -1,15 +1,12 @@
 import APIError from "@/api/Error/APIError";
+import votes from "@/data/votes";
 import {
   IActivity,
   IActivityFilers,
   ICreateActivity,
   ICreateActivityService,
 } from "@/interfaces/IActivity";
-import {
-  ICreateActivityComment,
-  ICreateActivityCommentService,
-} from "@/interfaces/IComments";
-import { ObjectId } from "mongodb";
+import { IVote, IVoteDocument, IVoteType } from "@/interfaces/IVote";
 import { Inject, Service } from "typedi";
 import { Logger } from "winston";
 
@@ -17,8 +14,109 @@ import { Logger } from "winston";
 export default class ActivityService {
   constructor(
     @Inject("activityModel") private activityModel: Models.ActivityModel,
+    @Inject("voteModel") private voteModel: Models.VoteModel,
     @Inject("logger") private logger: Logger
   ) {}
+
+  private calculateNewVotes(
+    upVotes: number,
+    downVotes: number,
+    yourVote: IVoteType,
+    yourPreviousVote: IVoteType | null
+  ) {
+    if (yourVote === "up") {
+      if (yourPreviousVote === "down") downVotes--;
+      else if (yourPreviousVote !== "up") upVotes++;
+    } else if (yourVote === "down") {
+      if (yourPreviousVote === "up") upVotes--;
+      else if (yourPreviousVote !== "down") downVotes++;
+    }
+
+    const allVotes = upVotes + downVotes;
+    const upVoteRatio = upVotes / allVotes;
+
+    return {
+      allVotes,
+      upVoteRatio,
+      upVotes,
+      downVotes,
+    };
+  }
+
+  private async editCreateOrDeleteVote(
+    vote: IVoteDocument | null,
+    yourVote: IVoteType,
+    activityId: string,
+    userId: string
+  ) {
+    if (vote && vote.type !== yourVote) {
+      return await this.voteModel.updateOne(
+        { _id: vote._id },
+        { $set: { type: yourVote } }
+      );
+    } else if (vote) {
+      return await this.voteModel.deleteOne({
+        _id: vote._id,
+      });
+    }
+
+    const newVote: IVote = {
+      user: userId,
+      activity: activityId,
+      type: yourVote,
+    };
+
+    return await this.voteModel.create(newVote);
+  }
+
+  private async getActivityWithUserVote(activityId: string, userId: string) {
+    const activity = await this.activityModel
+      .findOne({ _id: activityId })
+      .populate({
+        path: "userVote",
+        match: {
+          user: userId,
+        },
+        select: "type -activity",
+      })
+      .populate({ path: "user", select: "nick email role" });
+    if (!activity) throw new APIError("Activity doesn't exist", 404);
+    return activity as any;
+  }
+
+  private async addOrUpdateVote(
+    activityId: string,
+    userId: string,
+    voteType: IVoteType
+  ) {
+    const activity = await this.getActivityWithUserVote(activityId, userId);
+
+    const vote = activity.userVote;
+
+    await this.editCreateOrDeleteVote(vote, voteType, activityId, userId);
+
+    const { allVotes, upVoteRatio, upVotes, downVotes } =
+      this.calculateNewVotes(
+        activity.upVotesCount,
+        activity.downVotesCount,
+        voteType,
+        vote?.type || null
+      );
+
+    await this.activityModel.updateOne(
+      {
+        _id: activityId,
+      },
+      {
+        $set: {
+          votes: allVotes,
+          upVotes,
+          downVotes,
+          upVoteRatio,
+        },
+      }
+    );
+  }
 
   public async list(
     { start, limit, sortBy, search }: IActivityFilers,
@@ -30,147 +128,34 @@ export default class ActivityService {
       top: { upVotes: -1 },
     };
 
-    const activities = await this.activityModel.aggregate([
-      {
-        $match: {
-          ...(search
-            ? { $text: { $search: search, $caseSensitive: false } }
-            : {}),
-        },
-      },
-      {
-        $sort: sortObj[sortBy],
-      },
-      { $skip: start },
-      { $limit: limit },
-      {
-        $lookup: {
-          from: "votes",
-          let: {
-            activity_id: "$_id",
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    {
-                      $eq: ["$activity", "$$activity_id"],
-                    },
-                    {
-                      $eq: ["$user", new ObjectId(userId)],
-                    },
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                type: 1,
-              },
-            },
-          ],
-          as: "voteObj",
-        },
-      },
-      {
-        $unwind: {
-          path: "$voteObj",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+    const findParams = {
+      ...(search && { $text: { $search: search } }),
+    };
 
-      {
-        $set: {
-          yourVote: {
-            $ifNull: ["$voteObj.type", null],
-          },
+    const activities = await this.activityModel
+      .find(findParams)
+      .populate({
+        path: "userVote",
+        match: {
+          user: userId,
         },
-      },
-      {
-        $lookup: {
-          from: "users",
-          let: { user_id: "$user" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
-            { $project: { nick: 1, email: 1, role: 1 } },
-          ],
-          as: "user",
-        },
-      },
-      {
-        $unwind: "$user",
-      },
-      {
-        $project: {
-          voteObj: 0,
-        },
-      },
-    ]);
+        select: "type -activity",
+      })
+      .populate({
+        path: "user",
+        select: "nick email role",
+      })
+      .sort(sortObj[sortBy])
+      .limit(limit)
+      .skip(start);
 
     return activities;
   }
 
   public async details(activityId: string, userId: string) {
-    const activity = await this.activityModel
-      .find(
-        { _id: new ObjectId(activityId) },
+    const activity = await this.getActivityWithUserVote(activityId, userId);
 
-        {
-          upVotesCount: { $size: "$upVotes" },
-          text: 1,
-          photo: 1,
-          downVotesCount: { $size: "$downVotes" },
-          date: 1,
-          upVoteRatio: 1,
-          votes: 1,
-          yourVote: {
-            $switch: {
-              branches: [
-                {
-                  case: {
-                    $gt: [
-                      { $size: { $setIntersection: ["$upVotes", [userId]] } },
-                      0,
-                    ],
-                  },
-                  then: "upvote",
-                },
-                {
-                  case: {
-                    $gt: [
-                      {
-                        $size: { $setIntersection: ["$downVotes", [userId]] },
-                      },
-                      0,
-                    ],
-                  },
-                  then: "downvote",
-                },
-              ],
-              default: null,
-            },
-          },
-          commentCount: { $size: "$comments" },
-          comments: {
-            text: 1,
-            user: 1,
-            date: 1,
-          },
-        }
-      )
-      .populate({
-        path: "user",
-        model: "User",
-        select: "nick email role",
-      })
-      .populate({
-        path: "comments",
-        populate: { path: "user", model: "User", select: "nick email role" },
-      });
-
-    console.log(activity);
-    return activity[0];
+    return activity;
   }
   public async add(
     activity: ICreateActivityService
@@ -179,8 +164,8 @@ export default class ActivityService {
       user: activity.userId,
       text: activity.text,
       upVoteRatio: 0,
-      upVotes: [],
-      downVotes: [],
+      upVotesCount: 0,
+      downVotesCount: 0,
       votes: 0,
       date: new Date(),
       photo: activity.pictureUrl || undefined,
@@ -189,170 +174,11 @@ export default class ActivityService {
     return { activity: result };
   }
 
-  public async upVote(id: string, userId: string) {
-    const activities = await this.activityModel
-      .aggregate()
-      .match({ _id: new ObjectId(id) })
-      .project({
-        upVote: {
-          $cond: [
-            {
-              $gt: [{ $size: { $setIntersection: ["$upVotes", [userId]] } }, 0],
-            },
-            true,
-            false,
-          ],
-        },
-        downVote: {
-          $cond: [
-            {
-              $gt: [
-                { $size: { $setIntersection: ["$downVotes", [userId]] } },
-                0,
-              ],
-            },
-            true,
-            false,
-          ],
-        },
-        upVoteLength: { $size: "$upVotes" },
-        downVotesLength: { $size: "$downVotes" },
-      });
-    const activity = activities[0];
-    console.log(typeof activity.upVoteLength);
-
-    if (!activity) throw new APIError("Activity doesn't exist", 404);
-
-    if (activity.upVote) {
-      const upVotes = activity.upVoteLength - 1;
-      const downVotes = activity.downVotesLength;
-      const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes || 0;
-      await this.activityModel.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        {
-          $pull: { upVotes: userId },
-          $set: { upVoteRatio },
-        }
-      );
-      return;
-    }
-
-    const upVotes = activity.upVoteLength + 1;
-
-    if (activity.downVote) {
-      const downVotes = activity.downVotesLength - 1;
-      const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes;
-      await this.activityModel.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        {
-          $pull: { downVotes: userId },
-          $set: { upVoteRatio },
-          $push: { upVotes: userId },
-        }
-      );
-      return;
-    }
-    const downVotes = activity.downVotesLength;
-    const allVotes = upVotes + downVotes;
-    const upVoteRatio = upVotes / allVotes;
-
-    await this.activityModel.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { upVoteRatio }, $push: { upVotes: userId } }
-    );
+  public async upVote(activityId: string, userId: string) {
+    await this.addOrUpdateVote(activityId, userId, "up");
   }
 
-  public async downVote(id: string, userId: string) {
-    const activities = await this.activityModel
-      .aggregate()
-      .match({ _id: new ObjectId(id) })
-      .project({
-        upVote: {
-          $cond: [
-            {
-              $gt: [{ $size: { $setIntersection: ["$upVotes", [userId]] } }, 0],
-            },
-            true,
-            false,
-          ],
-        },
-        downVote: {
-          $cond: [
-            {
-              $gt: [
-                { $size: { $setIntersection: ["$downVotes", [userId]] } },
-                0,
-              ],
-            },
-            true,
-            false,
-          ],
-        },
-        upVoteLength: { $size: "$upVotes" },
-        downVotesLength: { $size: "$downVotes" },
-      });
-    const activity = activities[0];
-
-    if (!activity) throw new APIError("Activity doesn't exist", 404);
-
-    if (activity.downVote) {
-      const downVotes = activity.downVotesLength - 1;
-      const upVotes = activity.upVoteLength;
-      const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes || 0;
-      await this.activityModel.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        {
-          $pull: { downVotes: userId },
-          $set: { upVoteRatio },
-        }
-      );
-      return;
-    }
-
-    const downVotes = activity.downVotesLength + 1;
-
-    if (activity.upVote) {
-      const upVotes = activity.upVoteLength - 1;
-      const allVotes = upVotes + downVotes;
-      const upVoteRatio = upVotes / allVotes;
-      await this.activityModel.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        {
-          $pull: { upVotes: userId },
-          $set: { upVoteRatio },
-          $push: { downVotes: userId },
-        }
-      );
-      return;
-    }
-    const upVotes = activity.upVoteLength;
-    const allVotes = upVotes + downVotes;
-    const upVoteRatio = upVotes / allVotes;
-
-    await this.activityModel.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { upVoteRatio }, $push: { downVotes: userId } }
-    );
-  }
-
-  public async addComment(
-    comment: ICreateActivityCommentService
-  ): Promise<void> {
-    const newComment: ICreateActivityComment = {
-      activity: comment.activityId,
-      user: comment.userId,
-      text: comment.text,
-      date: new Date(),
-    };
-    console.log("new comment");
-    console.log(newComment);
-
-    await this.activityModel.updateOne(
-      { _id: comment.activityId },
-      { $push: { comments: { $each: [newComment], $position: 0 } } }
-    );
+  public async downVote(activityId: string, userId: string) {
+    await this.addOrUpdateVote(activityId, userId, "down");
   }
 }

@@ -1,10 +1,7 @@
 import agent from "app/api/agent";
-import {
-  IActivity,
-  IActivityDetails,
-  IActivityFilters,
-} from "app/models/Activity";
+import { IActivity, IActivityFilters } from "app/models/Activity";
 import { ICreateComment } from "app/models/Comment";
+import { IVote } from "app/models/Vote";
 import { ConvertToParams } from "features/Activities/utils/ConvertToParams";
 import { makeAutoObservable } from "mobx";
 
@@ -14,7 +11,7 @@ export default class ActivityStore {
   }
 
   activities: IActivity[] | null = [];
-  activity: IActivityDetails | null = null;
+  activity: IActivity | null = null;
   filters: IActivityFilters = {
     sort: "hot",
     search: "",
@@ -47,52 +44,65 @@ export default class ActivityStore {
     }
   };
 
-  upvoteActivity = async (id: string) => {
-    try {
-      await agent.Activity.upvote(id);
-      const activities = [...(this.activities || [])];
-      const activity = activities.find((item) => item._id === id);
-
-      if (!activity) return;
-      if (activity.yourVote === "upvote") {
+  updateVoteActivity = (activity: IActivity, newVote: IVote) => {
+    const previousVote = activity.userVote;
+    if (newVote === "up") {
+      if (previousVote == "up") {
         activity.upVotesCount--;
-        activity.yourVote = null;
-      } else {
-        activity.upVotesCount++;
-        activity.yourVote === "downvote" && activity.downVotesCount--;
-        activity.yourVote = "upvote";
+        activity.userVote = null;
+        return activity;
       }
 
-      const indexOfEl = activities.findIndex((item) => item._id === id);
-      activities[indexOfEl] = activity;
+      if (previousVote === "down") {
+        activity.downVotesCount--;
+      }
+      activity.userVote === "up";
+      activity.upVotesCount++;
+    } else if (newVote === "down") {
+      if (previousVote == "down") {
+        activity.downVotesCount--;
+        activity.userVote = null;
+        return activity;
+      }
 
-      this.activities = activities;
+      if (previousVote === "up") {
+        activity.upVotesCount--;
+      }
+      activity.userVote === "down";
+      activity.downVotesCount++;
+    }
+
+    return activity;
+  };
+
+  updateVoteOnActivity = async (vote: IVote) => {
+    if (!this.activity?._id) throw new Error("There is no activity");
+    try {
+      vote === "up" && (await agent.Activity.upvote(this.activity._id));
+      vote === "down" && (await agent.Activity.downvote(this.activity._id));
+      const newActivity = this.updateVoteActivity({ ...this.activity }, vote);
+      this.activity = newActivity;
     } catch (err) {
       console.log("Problem upvoting activity" + err);
     }
   };
 
-  downvoteActivity = async (id: string) => {
+  updateVoteOnActivities = async (vote: IVote, activityId: string) => {
+    const activity = this.activities?.find(
+      (activity) => activity._id === activityId
+    );
+    if (!activity) throw new Error("There is noe activity");
     try {
-      await agent.Activity.downvote(id);
-      const activities = [...(this.activities || [])];
-      const activity = activities.find((item) => item._id === id);
-      if (!activity) return;
-      if (activity.yourVote === "downvote") {
-        activity.downVotesCount--;
-        activity.yourVote = null;
-      } else {
-        activity.downVotesCount++;
-        activity.yourVote === "upvote" && activity.upVotesCount--;
-        activity.yourVote = "downvote";
-      }
-
-      const indexOfEl = activities.findIndex((item) => item._id === id);
-      activities[indexOfEl] = activity;
-
-      this.activities = activities;
+      vote === "up" && (await agent.Activity.upvote(activity._id));
+      vote === "down" && (await agent.Activity.downvote(activity._id));
+      this.activities =
+        this.activities?.map((item) => {
+          if (item._id === activityId)
+            return this.updateVoteActivity({ ...activity }, vote);
+          return activity;
+        }) || [];
     } catch (err) {
-      console.log("Problem downvoting activity" + err);
+      console.log("Problem upvoting activity" + err);
     }
   };
 
