@@ -13,9 +13,28 @@ export default class AuthenticationStore {
   registerError = "";
   isSubmitting = false;
   isAuthenticated = false;
+  isLoading = true;
 
-  logout = () => {
-    console.log("logout");
+  logout = async () => {
+    try {
+      await agent.Auth.logout();
+      this.isAuthenticated = false;
+    } catch (err) {
+      console.log("problem with logout" + err);
+    }
+  };
+
+  verify = async () => {
+    try {
+      await agent.Auth.verify();
+      runInAction(() => {
+        this.isAuthenticated = true;
+      });
+    } catch (err) {
+      console.log("Invalid token");
+    } finally {
+      this.isLoading = false;
+    }
   };
 
   login = async (creds: ICreds) => {

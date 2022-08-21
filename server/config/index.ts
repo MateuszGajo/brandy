@@ -14,6 +14,9 @@ export default {
   logs: {
     level: process.env.LOG_LEVEL || "silly",
   },
-  jwtAccessSecret: "FDA$#@SDff23e23zxf#@$DSFS",
-  jwtRefreshSecret: "FDAS@#!#EXADASE!@EAS",
+  jwtAccessSecret: process.env.JWT_ACCCESS_KEY,
+  jwtRefreshSecret: process.env.JWT_REFRESH_KEY,
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 };

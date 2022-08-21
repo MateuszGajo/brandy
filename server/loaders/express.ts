@@ -11,5 +11,7 @@ export default ({ app }: { app: express.Application }) => {
   app.use(cors({ credentials: true, origin: true }));
   app.use(cookieParser());
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
   app.use(routes());
 };

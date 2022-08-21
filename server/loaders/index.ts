@@ -12,8 +12,24 @@ export default ({ expressApp }: { expressApp: Application }) => {
     name: "userModel",
     model: require("../models/user").default,
   };
+
+  const activityModel = {
+    name: "activityModel",
+    model: require("../models/activity").default,
+  };
+
+  const voteModel = {
+    name: "voteModel",
+    model: require("../models/vote").default,
+  };
+
+  const commentModel = {
+    name: "commentModel",
+    model: require("../models/comment").default,
+  };
+
   dependancyInjector({
-    models: [userModel],
+    models: [userModel, activityModel, voteModel, commentModel],
   });
 
   expressLoader({ app: expressApp });

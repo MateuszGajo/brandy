@@ -1,8 +1,14 @@
 import axios from "axios";
 import { store } from "app/provider/RootStoreProvider";
 import { ICreds } from "app/models/Authentication";
+import { IActivity } from "app/models/Activity";
+import { ICreateComment } from "app/models/Comment";
+import { request } from "http";
+
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
+
+// let isRefreshing = false;
 
 axios.interceptors.response.use(
   (response) => {
@@ -12,39 +18,56 @@ axios.interceptors.response.use(
     const statusCode = error.response.status || null;
     const originalRequest = error.config;
 
-    const refreshTokenValue = "refersh";
+    // const userLogout = () => {
+    //   store.authenticationStore.logout();
+    // };
 
-    const userLogout = () => {
-      store.authenticationStore.logout();
-    };
+    // const refreshToken = () => {
+    //   axios
+    //     .get("auth/refresh")
+    //     .catch(userLogout)
+    //     .finally(() => {
+    //       isRefreshing = false;
+    //     });
+    // };
 
-    const refreshToken = () => {
-      axios
-        .post("auth/refresh", { refreshToken: refreshTokenValue })
-        .catch(userLogout);
-    };
-
-    if (statusCode === 401 && originalRequest.url === "auth/token/refresh")
-      userLogout();
-    else if (statusCode === 401 && !originalRequest.retry) {
-      originalRequest._retry = true;
-      refreshToken();
-    }
+    // if (statusCode === 401 && originalRequest.url === "auth/token/refresh")
+    //   userLogout();
+    // else if (statusCode === 401 && !isRefreshing) {
+    //   isRefreshing = true;
+    //   refreshToken();
+    // }
 
     return Promise.reject(error);
   }
 );
 
 const requests = {
-  get: <T>(url: string) => axios.get<T>(url),
-  post: <T>(url: string, body: any) => axios.post<T>(url, body),
-  put: <T>(url: string, body: any) => axios.put<T>(url, body),
+  get: <T>(url: string, opt = {}) => axios.get<T>(url, opt),
+  post: <T>(url: string, body = {}) => axios.post<T>(url, body),
+  put: <T>(url: string, body = {}) => axios.put<T>(url, body),
   delete: <T>(url: string) => axios.delete<T>(url),
 };
 
 const Auth = {
   login: (creds: ICreds) => requests.post("/auth/signin", creds),
   register: (creds: ICreds) => requests.post("/auth/signup", creds),
+  verify: () => requests.get("/auth/verify"),
+  logout: () => requests.get("/auth/logout"),
 };
 
-export default { Auth };
+const Activity = {
+  list: (params: URLSearchParams) =>
+    requests.get<IActivity[]>("/activity", { params }),
+  details: (id: string) => requests.get<IActivity>(`/activity/${id}`),
+  create: (activity: FormData) => requests.post("/activity/add", activity),
+  upvote: (id: string) => requests.put(`/activity/${id}/upvote`),
+  downvote: (id: string) => requests.put(`/activity/${id}/downvote`),
+};
+
+const Comment = {
+  add: (activityId: string, comment: ICreateComment) =>
+    requests.post(`/activity/${activityId}/addComment`, comment),
+};
+
+export default { Auth, Activity, Comment };

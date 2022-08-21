@@ -1,8 +1,9 @@
-import { Grid, Alert, Button } from "@mui/material";
-import React from "react";
+import { Grid, Alert, Button, Box, CircularProgress } from "@mui/material";
+import React, { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
+import { useAuthenticationStore } from "./RootStoreProvider";
 
 const theme = createTheme({
   palette: {
@@ -15,6 +16,9 @@ const theme = createTheme({
     action: {
       disabledBackground: deepPurple[300],
     },
+  },
+  typography: {
+    fontFamily: ["IBM Plex Sans", "Arial", "sans-serif"].join(","),
   },
 });
 
@@ -45,18 +49,21 @@ const Fallback = () => (
 );
 
 const AppProvider: React.FC<IProps> = ({ children }) => {
+  const { verify } = useAuthenticationStore();
+
+  useEffect(() => {
+    verify();
+  }, []);
+
   return (
     <React.Suspense
       fallback={
-        // <Box sx={{ display: "flex" }}>
-        //   <CircularProgress />
-        // </Box>
-        <p>fds</p>
+        <Box sx={{ display: "flex" }}>
+          <CircularProgress />
+        </Box>
       }
     >
-      <ErrorBoundary FallbackComponent={Fallback}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </ErrorBoundary>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </React.Suspense>
   );
 };

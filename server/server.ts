@@ -2,9 +2,15 @@ import "reflect-metadata";
 import express, { Application } from "express";
 import Logger from "./loaders/logger";
 import config from "./config";
+import bodyParser from "body-parser";
 
 function startServer() {
   const app: Application = express();
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.post("/aa", (req) => {
+    console.log(req.body);
+  });
 
   require("./loaders").default({ expressApp: app });
 

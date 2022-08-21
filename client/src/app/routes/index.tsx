@@ -1,16 +1,20 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "features/auth/Login";
 import Register from "features/auth/Register";
-import RequireAuth from "./RequireAuth";
 import Unauth from "./Unauth";
-import Dashboard from "features/Dashboard/Dashboard";
+import Dashboard from "features/Activities/Dashboard";
+import Activity from "features/Activities/Details";
+import RequireAuth from "./RequireAuth";
+import ActivityForm from "features/Activities/Form";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/activity/:id" element={<Activity />} />
         <Route element={<RequireAuth />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/activity/add" element={<ActivityForm />} />
         </Route>
         <Route element={<Unauth />}>
           <Route path="/signin" element={<Login />} />

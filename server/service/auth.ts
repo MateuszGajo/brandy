@@ -82,7 +82,7 @@ export default class AuthService {
 
   public refreshToken(refreshToken: string): { accessToken: string } {
     try {
-      jwt.verify(refreshToken, config.jwtRefreshSecret);
+      jwt.verify(refreshToken, config.jwtRefreshSecret as string);
     } catch (e) {
       throw new APIError("Refresh token is invalid", 401);
     }
@@ -111,6 +111,6 @@ export default class AuthService {
       expiresIn,
     };
 
-    return jwt.sign(jwtPayload, jwtSecret, jwtOption);
+    return jwt.sign(jwtPayload, jwtSecret as string, jwtOption);
   }
 }
