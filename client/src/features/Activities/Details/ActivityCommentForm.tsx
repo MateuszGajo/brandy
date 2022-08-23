@@ -1,7 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { ICreateComment } from "app/models/Comment";
-import { useActivityStore } from "app/provider/RootStoreProvider";
+import { useCommentStore } from "app/provider/RootStoreProvider";
 import { useFormik } from "formik";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -15,11 +15,12 @@ const ActivityCommentForm = () => {
   const params = useParams();
   const id = params["id"] || "";
 
-  const { addComment } = useActivityStore();
+  const { addComment } = useCommentStore();
 
   const handleSubmit = (values: ICreateComment) => {
     console.log("halo");
     addComment(values, id);
+    formik.resetForm();
   };
 
   const formik = useFormik({

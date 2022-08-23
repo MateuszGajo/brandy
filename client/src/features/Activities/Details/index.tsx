@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import {
   useActivityStore,
   useAuthenticationStore,
+  useCommentStore,
 } from "app/provider/RootStoreProvider";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
@@ -17,10 +18,12 @@ const Details = () => {
   const id = params["id"] || "";
 
   const { activity, loadActivity } = useActivityStore();
+  const { loadComments, comments } = useCommentStore();
   const { isAuthenticated } = useAuthenticationStore();
 
   useEffect(() => {
     loadActivity(id || "");
+    loadComments(id);
   }, [id]);
 
   if (!activity)
@@ -42,7 +45,7 @@ const Details = () => {
           ) : null}
         </Container>
         <Box height="30px" sx={{ backgroundColor: "#e1e1e1" }} />
-        <ActivityCommentList activity={activity} />
+        <ActivityCommentList comments={comments} />
       </Box>
     </HomeLayout>
   );
