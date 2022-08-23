@@ -2,7 +2,7 @@ import agent from "app/api/agent";
 import { IActivity, IActivityFilters } from "app/models/Activity";
 import { ICreateComment } from "app/models/Comment";
 import { IVote } from "app/models/Vote";
-import { ConvertToParams } from "features/Activities/utils/ConvertToParams";
+import { ConvertToParams } from "app/utils/ConvertToParams";
 import { makeAutoObservable } from "mobx";
 
 export default class ActivityStore {
@@ -56,7 +56,7 @@ export default class ActivityStore {
       if (previousVote === "down") {
         activity.downVotesCount--;
       }
-      activity.userVote === "up";
+      activity.userVote = "up";
       activity.upVotesCount++;
     } else if (newVote === "down") {
       if (previousVote == "down") {
@@ -68,7 +68,7 @@ export default class ActivityStore {
       if (previousVote === "up") {
         activity.upVotesCount--;
       }
-      activity.userVote === "down";
+      activity.userVote = "down";
       activity.downVotesCount++;
     }
 
@@ -80,6 +80,7 @@ export default class ActivityStore {
     try {
       vote === "up" && (await agent.Activity.upvote(this.activity._id));
       vote === "down" && (await agent.Activity.downvote(this.activity._id));
+      console.log({ ...this.activity }, vote);
       const newActivity = this.updateVoteActivity({ ...this.activity }, vote);
       this.activity = newActivity;
     } catch (err) {
@@ -97,9 +98,10 @@ export default class ActivityStore {
       vote === "down" && (await agent.Activity.downvote(activity._id));
       this.activities =
         this.activities?.map((item) => {
-          if (item._id === activityId)
+          if (item._id === activityId) {
             return this.updateVoteActivity({ ...activity }, vote);
-          return activity;
+          }
+          return item;
         }) || [];
     } catch (err) {
       console.log("Problem upvoting activity" + err);
@@ -111,14 +113,6 @@ export default class ActivityStore {
       await agent.Activity.create(newActivity);
     } catch (err) {
       console.log("Error has occured" + err);
-    }
-  };
-
-  addComment = async (newComment: ICreateComment, activityId: string) => {
-    try {
-      await agent.Comment.add(activityId, newComment);
-    } catch (err) {
-      console.log("Problem adding comment" + err);
     }
   };
 }

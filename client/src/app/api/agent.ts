@@ -1,9 +1,7 @@
 import axios from "axios";
-import { store } from "app/provider/RootStoreProvider";
 import { ICreds } from "app/models/Authentication";
 import { IActivity } from "app/models/Activity";
-import { ICreateComment } from "app/models/Comment";
-import { request } from "http";
+import { IComment, ICreateComment } from "app/models/Comment";
 
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
@@ -67,7 +65,9 @@ const Activity = {
 
 const Comment = {
   add: (activityId: string, comment: ICreateComment) =>
-    requests.post(`/activity/${activityId}/addComment`, comment),
+    requests.post<IComment>(`/activity/${activityId}/comments/add`, comment),
+  list: (activityId: string, params: URLSearchParams) =>
+    requests.get<IComment[]>(`/activity/${activityId}/comments`, { params }),
 };
 
 export default { Auth, Activity, Comment };

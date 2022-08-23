@@ -17,6 +17,14 @@ export default class CommentService {
       date: new Date(),
     };
 
-    this.commentModel.create(newComment);
+    return this.commentModel.create(newComment);
+  }
+
+  public async list(activityId: string, start = 0, limit = 10) {
+    return await this.commentModel
+      .find({ activity: activityId })
+      .skip(start)
+      .limit(limit)
+      .sort({ date: -1 });
   }
 }
