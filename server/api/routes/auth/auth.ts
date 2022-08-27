@@ -70,7 +70,7 @@ export default (app: Router) => {
   });
 
   route.get("/verify", verifyAccessToken, async (req, res) => {
-    return res.status(200).send("Token is valid");
+    return res.status(200).send({ user: res.locals.user });
   });
 
   route.get("/refresh", async (req, res) => {

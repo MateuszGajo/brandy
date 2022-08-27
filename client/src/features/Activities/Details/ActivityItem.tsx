@@ -24,7 +24,7 @@ interface IProps {
 
 const ActivityItem = ({ activity }: IProps) => {
   const { updateVoteOnActivity } = useActivityStore();
-  const { isAuthenticated } = useAuthenticationStore();
+  const { user } = useAuthenticationStore();
   const { year, month, day, hours, minutes } = getDate(new Date(activity.date));
   return (
     <Paper elevation={1}>
@@ -45,7 +45,7 @@ const ActivityItem = ({ activity }: IProps) => {
                 "&:hover": { color: green[500] },
               }}
               onClick={() => updateVoteOnActivity("up")}
-              disabled={!isAuthenticated}
+              disabled={!user}
             >
               <ImArrowUp
                 size={23}
@@ -66,7 +66,7 @@ const ActivityItem = ({ activity }: IProps) => {
                 color: "#c1c1c1",
                 "&:hover": { color: red[400] },
               }}
-              disabled={!isAuthenticated}
+              disabled={!user}
               onClick={() => updateVoteOnActivity("down")}
             >
               <ImArrowDown

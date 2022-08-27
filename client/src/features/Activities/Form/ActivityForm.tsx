@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import { useActivityStore } from "app/provider/RootStoreProvider";
+import { useNavigate } from "react-router-dom";
 
 const IMAGE_FILE_FORMATS_LIST = [
   "image/jpg",
@@ -41,11 +42,13 @@ const schema = yup.object({
 const ActivityForm = () => {
   const { createActivity } = useActivityStore();
 
+  const navigate = useNavigate();
+
   const handleSubmit = (values: ICreateActivity) => {
     const formData = new FormData();
     values.image && formData.append("file", values.image);
     formData.append("text", values.text);
-    createActivity(formData);
+    createActivity(formData).then(() => navigate("/"));
   };
 
   const formik = useFormik({
@@ -54,7 +57,6 @@ const ActivityForm = () => {
     validationSchema: schema,
     validateOnChange: true,
   });
-  console.log(formik.errors);
 
   const [isDragOver, setDragOver] = useState(false);
   const [photo, setPhoto] = useState(null);

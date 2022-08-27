@@ -19,7 +19,7 @@ const Details = () => {
 
   const { activity, loadActivity } = useActivityStore();
   const { loadComments, comments } = useCommentStore();
-  const { isAuthenticated } = useAuthenticationStore();
+  const { user } = useAuthenticationStore();
 
   useEffect(() => {
     loadActivity(id || "");
@@ -37,7 +37,7 @@ const Details = () => {
       <Box>
         <Container maxWidth="sm" sx={{ mt: 2 }}>
           <ActivityItem activity={activity} />
-          {isAuthenticated ? (
+          {user ? (
             <>
               <Box height="5px" sx={{ backgroundColor: "#f8f8f8" }} />
               <ActivityCommentForm />

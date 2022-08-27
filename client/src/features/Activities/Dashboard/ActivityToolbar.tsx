@@ -23,7 +23,7 @@ const ActivityToolbar = () => {
             variant="body1"
             fontWeight={filters.sort === "hot" ? "700" : "500"}
           >
-            Hot
+            Gorące
           </Typography>
         </Button>
         <Button
@@ -38,7 +38,7 @@ const ActivityToolbar = () => {
             variant="body1"
             fontWeight={filters.sort === "new" ? "700" : "500"}
           >
-            New
+            Nowe
           </Typography>
         </Button>
         <Button
@@ -53,7 +53,7 @@ const ActivityToolbar = () => {
             variant="body1"
             fontWeight={filters.sort === "top" ? "700" : "500"}
           >
-            Top
+            Popularne
           </Typography>
         </Button>
       </Box>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { ICreds } from "app/models/Authentication";
 import { IActivity } from "app/models/Activity";
 import { IComment, ICreateComment } from "app/models/Comment";
+import { IAuthResponse, IUser } from "app/models/User";
 
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
@@ -48,9 +49,10 @@ const requests = {
 };
 
 const Auth = {
-  login: (creds: ICreds) => requests.post("/auth/signin", creds),
-  register: (creds: ICreds) => requests.post("/auth/signup", creds),
-  verify: () => requests.get("/auth/verify"),
+  login: (creds: ICreds) => requests.post<IAuthResponse>("/auth/signin", creds),
+  register: (creds: ICreds) =>
+    requests.post<IAuthResponse>("/auth/signup", creds),
+  verify: () => requests.get<IAuthResponse>("/auth/verify"),
   logout: () => requests.get("/auth/logout"),
 };
 

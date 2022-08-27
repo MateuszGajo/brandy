@@ -1,5 +1,6 @@
 import agent from "app/api/agent";
 import { ICreds, INewUser } from "app/models/Authentication";
+import { IUser } from "app/models/User";
 import { authError } from "app/utils/ErrorResponses";
 import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
@@ -12,13 +13,13 @@ export default class AuthenticationStore {
   loginError = "";
   registerError = "";
   isSubmitting = false;
-  isAuthenticated = false;
   isLoading = true;
+  user: IUser | null = null;
 
   logout = async () => {
     try {
       await agent.Auth.logout();
-      this.isAuthenticated = false;
+      this.user = null;
     } catch (err) {
       console.log("problem with logout" + err);
     }
@@ -26,9 +27,10 @@ export default class AuthenticationStore {
 
   verify = async () => {
     try {
-      await agent.Auth.verify();
+      const { data } = await agent.Auth.verify();
+      const { user } = data;
       runInAction(() => {
-        this.isAuthenticated = true;
+        this.user = user;
       });
     } catch (err) {
       console.log("Invalid token");
@@ -41,14 +43,16 @@ export default class AuthenticationStore {
     this.loginError = "";
     this.isSubmitting = true;
     try {
-      await agent.Auth.login(creds);
+      const { data } = await agent.Auth.login(creds);
+      const { user } = data;
+
       runInAction(() => {
+        this.user = user;
         this.isSubmitting = false;
-        this.isAuthenticated = true;
       });
     } catch (error) {
       runInAction(() => {
-        this.isSubmitting = false;
+        this.user = null;
       });
       if (!axios.isAxiosError(error)) return console.log("erorr?");
       const code = error.response?.status;
@@ -65,14 +69,16 @@ export default class AuthenticationStore {
     this.isSubmitting = true;
     this.loginError = "";
     try {
-      await agent.Auth.register(creds);
+      const { data } = await agent.Auth.register(creds);
+      const { user } = data;
+
       runInAction(() => {
+        this.user = user;
         this.isSubmitting = false;
-        this.isAuthenticated = true;
       });
     } catch (error) {
       runInAction(() => {
-        this.isSubmitting = false;
+        this.user = null;
       });
       if (!axios.isAxiosError(error)) return;
       const code = error.response?.status;

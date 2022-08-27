@@ -29,7 +29,7 @@ const Nav = () => {
   const pathname = location.pathname;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const { isAuthenticated, logout } = useAuthenticationStore();
+  const { logout, user } = useAuthenticationStore();
   const { setFilters } = useActivityStore();
 
   const searchTimeout = (ms: number) => {
@@ -71,7 +71,7 @@ const Nav = () => {
           {pathname === "/" ? (
             <TextField
               size="small"
-              placeholder="search"
+              placeholder="Wyszukaj"
               sx={{
                 width: "30rem",
               }}
@@ -86,10 +86,10 @@ const Nav = () => {
             />
           ) : null}
 
-          {isAuthenticated ? (
+          {user ? (
             <>
               <Box display="flex" alignItems="center">
-                <Typography variant="body1">Nickname</Typography>
+                <Typography variant="body1">{user.nick}</Typography>
                 <Tooltip title="open">
                   <IconButton
                     onClick={handleClick}
@@ -141,14 +141,14 @@ const Nav = () => {
                     <ListItemIcon>
                       <AddIcon fontSize="small" />
                     </ListItemIcon>
-                    Create post
+                    dodaj post
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={logout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
-                  Logout
+                  Wyloguj
                 </MenuItem>
               </Menu>
             </>

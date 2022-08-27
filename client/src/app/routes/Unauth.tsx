@@ -4,8 +4,8 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const Unauth = () => {
-  const { isAuthenticated } = useAuthenticationStore();
-  if (isAuthenticated) return <Navigate to="/" />;
+  const { user } = useAuthenticationStore();
+  if (user) return <Navigate to="/" />;
   return <Outlet />;
 };
 
