@@ -1,0 +1,32 @@
+.container-fluid {
+  background: linear-gradient(to right, #2196f3, #673ab7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 400px;
+  min-height: 450px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  // align-items: center;
+  flex-direction: column;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.form-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.sr-only {
+  color: black;
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+}
