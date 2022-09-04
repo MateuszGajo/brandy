@@ -1,1 +1,59 @@
-<router-outlet></router-outlet>
+<header>
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Brandy</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarCollapse"
+      aria-controls="navbarCollapse"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <form class="form-inline mt-2 mt-md-0">
+        <input
+          class="form-control mr-sm-2"
+          type="text"
+          placeholder="Szukaj"
+          aria-label="Search"
+          (keydown)="onInputChange($event)"
+        />
+      </form>
+    </div>
+    <div class="account">
+      <a class="btn btn-login" routerLink="/signin" *ngIf="!user">Login</a>
+      <div class="btn-group dropleft">
+        <div class="dropdown" ngbDropdown *ngIf="user">
+          <button
+            class="btn btn-dropdown text-white"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            ngbDropdownToggle
+          >
+            {{ user.nick }}
+            <div class="circle"></div>
+          </button>
+          <div
+            class="dropdown-menu"
+            aria-labelledby="dropdownMenuButton"
+            ngbDropdownMenu
+          >
+            <a href="#" class="dropdown-item" ngbDropdownItem>Edit profile</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item" ngbDropdownItem>Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

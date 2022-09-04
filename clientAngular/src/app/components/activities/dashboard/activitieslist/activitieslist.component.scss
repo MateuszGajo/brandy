@@ -1,0 +1,105 @@
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  .card {
+    width: 500px;
+    max-height: 700px;
+    display: flex;
+    flex-direction: row;
+    .bar {
+      width: 80px;
+      align-self: stretch;
+      background-color: #e9e9e9;
+      .vote {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .upvote.isLogged {
+          &:hover {
+            color: rgb(76, 175, 80);
+          }
+          &.active {
+            color: rgb(76, 175, 80);
+          }
+        }
+        .downvote.isLogged {
+          &:hover {
+            color: red;
+          }
+          &.active {
+            color: red;
+          }
+        }
+        .vote-count {
+          padding: 10px 0;
+          font-weight: bold;
+        }
+        .icon {
+          color: rgba(0, 0, 0, 0.26);
+          font-weight: bold;
+          font-size: 27px;
+          cursor: pointer;
+        }
+      }
+    }
+    .card-content {
+      display: flex;
+      max-height: 700px;
+      flex-direction: column;
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        .user {
+          display: flex;
+          align-items: center;
+          .circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #673ab7;
+            color: white;
+          }
+          .username {
+            margin-left: 6px;
+            font-weight: bold;
+          }
+        }
+        .date {
+          margin-left: 20px;
+          .date-text {
+            font-size: 13px;
+            color: #b1b1b1;
+          }
+        }
+      }
+      .imageWrapper {
+        .card-img-top {
+          display: block;
+          object-fit: cover;
+          max-height: 400px;
+          height: 100%;
+          margin: 0 auto;
+          border-radius: 0;
+        }
+      }
+      .action {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        .icon {
+          color: #888;
+        }
+        .comment-count {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

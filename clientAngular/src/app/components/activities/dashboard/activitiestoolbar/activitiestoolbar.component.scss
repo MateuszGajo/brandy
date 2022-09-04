@@ -1,0 +1,27 @@
+.toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: white;
+  height: 50px;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 2px #d1d1d1;
+  .item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .item-name {
+      margin-left: 5px;
+      color: #757575;
+      &.active {
+        color: #673ab7;
+      }
+    }
+    .icon {
+      color: #757575;
+      &.active {
+        color: #673ab7;
+      }
+    }
+  }
+}

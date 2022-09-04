@@ -1,0 +1,49 @@
+nav {
+  padding: 10px 35px 10px 25px;
+}
+
+.navbar-collapse {
+  margin-left: auto;
+  flex-grow: 0;
+}
+
+.form-control {
+  width: 250px;
+}
+
+.account {
+  margin-left: auto;
+  .btn-login {
+    border-color: #673ab7;
+    color: white;
+  }
+}
+
+.dropdown-toggle {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &::after {
+    display: none;
+  }
+  .circle {
+    margin-left: 10px;
+    background-color: #673ab7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+  }
+}
+
+.dropdown-menu {
+  left: -50px;
+}
+
+.content {
+  margin-top: 60px;
+  background-color: #e1e1e1;
+}
