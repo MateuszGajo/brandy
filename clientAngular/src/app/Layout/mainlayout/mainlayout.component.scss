@@ -1,6 +1,7 @@
 nav {
   padding: 10px 35px 10px 25px;
 }
+
 .navbar-collapse {
   margin-left: auto;
   flex-grow: 0;
@@ -14,6 +15,7 @@ nav {
   margin-left: auto;
   .btn-login {
     border-color: #673ab7;
+    color: white;
   }
 }
 
@@ -39,4 +41,9 @@ nav {
 
 .dropdown-menu {
   left: -50px;
+}
+
+.content {
+  margin-top: 60px;
+  background-color: #e1e1e1;
 }

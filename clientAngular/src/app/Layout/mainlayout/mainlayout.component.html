@@ -20,6 +20,7 @@
           type="text"
           placeholder="Szukaj"
           aria-label="Search"
+          (keydown)="onInputChange($event)"
         />
       </form>
     </div>
@@ -53,4 +54,6 @@
     </div>
   </nav>
 </header>
-<router-outlet></router-outlet>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

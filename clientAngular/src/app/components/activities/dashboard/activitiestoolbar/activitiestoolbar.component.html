@@ -1,0 +1,32 @@
+<div class="toolbar">
+  <div class="item" (click)="changeActiveEl('hot')">
+    <mat-icon
+      fontIcon="local_fire_department"
+      class="icon"
+      [ngClass]="active === 'hot' ? 'active' : ''"
+    ></mat-icon>
+    <span class="item-name" [ngClass]="active === 'hot' ? 'active' : ''"
+      >Gorące</span
+    >
+  </div>
+  <div class="item" (click)="changeActiveEl('new')">
+    <mat-icon
+      fontIcon="schedule"
+      class="icon"
+      [ngClass]="active === 'new' ? 'active' : ''"
+    ></mat-icon>
+    <span class="item-name" [ngClass]="active === 'new' ? 'active' : ''"
+      >Nowe</span
+    >
+  </div>
+  <div class="item" (click)="changeActiveEl('top')">
+    <mat-icon
+      fontIcon="star"
+      class="icon"
+      [ngClass]="active === 'top' ? 'active' : ''"
+    ></mat-icon>
+    <span class="item-name" [ngClass]="active === 'top' ? 'active' : ''"
+      >Popularne</span
+    >
+  </div>
+</div>
