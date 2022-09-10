@@ -1,1 +1,108 @@
-<p>details works!</p>
+<div class="container">
+  <div class="card-wrapper">
+    <div class="card">
+      <div class="bar">
+        <div class="vote">
+          <mat-icon
+            fontIcon="add"
+            class="upvote icon"
+            [ngClass]="{ isLogged: user, active: activity?.userVote === 'up' }"
+            (click)="changeVote('up')"
+          ></mat-icon>
+          <span class="vote-count">{{
+            (activity?.upVotesCount || 0) - (activity?.downVotesCount || 0)
+          }}</span>
+          <mat-icon
+            fontIcon="remove"
+            class="downvote icon"
+            [ngClass]="{
+              isLogged: user,
+              active: activity?.userVote === 'down'
+            }"
+            (click)="changeVote('down')"
+          ></mat-icon>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="header">
+          <div class="user">
+            <div class="circle">
+              {{ activity?.user?.nick?.substring(0, 1) }}
+            </div>
+            <span class="username">{{ activity?.user?.nick }}</span>
+          </div>
+          <div class="date">
+            <span class="date-text">Dodano {{ activity?.dateFormatted }}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            {{ activity?.text }}
+          </p>
+        </div>
+        <div class="imageWrapper">
+          <img
+            class="card-img-top"
+            src="{{ activity?.photo }}"
+            alt="activity"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="comment-section">
+    <div class="container mt-3 mb-3 p-0">
+      <div class="d-flex row w-100">
+        <div class="d-flex flex-column p-0">
+          <div class="coment-bottom bg-white p-2 px-4">
+            <div class="d-flex flex-row add-comment-section mt-4 mb-4">
+              <div class="input-container">
+                <input
+                  type="text"
+                  class="form-control mr-3"
+                  placeholder="Dodaj komentarz"
+                  [(ngModel)]="commentModel.text"
+                  id="text"
+                  #text="ngModel"
+                  required
+                />
+
+                <div *ngIf="text.errors && text.touched">
+                  <div *ngIf="text.errors?.['required']" class="inputError">
+                    To pole jest wymagane
+                  </div>
+                </div>
+              </div>
+              <button
+                class="btn btn-primary add-comment"
+                type="button"
+                (click)="addComment()"
+              >
+                Skomentuj
+              </button>
+            </div>
+            <div class="comment-section-wrapper">
+              <div
+                class="commented-section mt-2"
+                *ngFor="let comment of comments"
+              >
+                <div class="d-flex flex-row align-items-center commented-user">
+                  <div class="circle">
+                    {{ activity?.user?.nick?.substring(0, 1) }}
+                  </div>
+                  <h5 class="mr-2 name">Corey oates</h5>
+                  <span class="ml-1 mb-1 date"
+                    >Dodano {{ comment?.dateFormatted }}</span
+                  >
+                </div>
+                <div class="comment-text-sm">
+                  <span>{{ comment.text }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

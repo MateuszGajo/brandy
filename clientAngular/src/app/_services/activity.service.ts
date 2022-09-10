@@ -10,9 +10,11 @@ import { convertToParams } from '../_utils/params';
   providedIn: 'root',
 })
 export class ActivityService {
-  onGetData: EventEmitter<any> = new EventEmitter();
+  onActivitesGetData: EventEmitter<any> = new EventEmitter();
+  onActivityGetData: EventEmitter<any> = new EventEmitter();
   activityParams: ActivityFilters = {};
   activities: Activity[] = [];
+  activity: Activity | null = null;
 
   constructor(
     private HttpClient: HttpClient,
@@ -75,13 +77,32 @@ export class ActivityService {
           return item;
         }) || [];
       this.activities = newActivities;
-      this.onGetData.emit(newActivities);
+      this.onActivitesGetData.emit(newActivities);
     } catch (err) {
       console.log('Problem upvoting activity' + err);
     }
   };
 
-  changeVote = (vote: Vote) => {};
+  updateVoteOnActivity = async (vote: Vote) => {
+    if (!this.activity?._id) throw new Error('There is no activity');
+    try {
+      vote === 'up' &&
+        (await this.HttpClient.put(
+          `activity/${this.activity._id}/upvote`,
+          {}
+        ).subscribe({}));
+      vote === 'down' &&
+        (await this.HttpClient.put(
+          `activity/${this.activity._id}/downvote`,
+          {}
+        ).subscribe({}));
+      const newActivity = this.updateVoteActivity({ ...this.activity }, vote);
+      this.activity = newActivity;
+      this.onActivityGetData.emit(newActivity);
+    } catch (err) {
+      console.log('Problem upvoting activity' + err);
+    }
+  };
 
   getActivities = (filters: ActivityFilters) => {
     const params = {
@@ -100,11 +121,25 @@ export class ActivityService {
           dateFormatted: formatActivityDate(new Date(item.date)),
         }));
         if (activities) {
-          this.onGetData.emit(activitesWithFormattedDate);
+          this.onActivitesGetData.emit(activitesWithFormattedDate);
           this.activities = activities;
         }
       },
     });
-    this.onGetData.emit('we are emitting' + Math.random());
+  };
+
+  getActivity = (id: string) => {
+    this.HttpClient.get<Activity>(`activity/${id}`).subscribe({
+      next: (activity) => {
+        const activityWithFormattedDate = {
+          ...activity,
+          dateFormatted: formatActivityDate(new Date(activity.date)),
+        };
+        if (activity) {
+          this.onActivityGetData.emit(activityWithFormattedDate);
+          this.activity = activity;
+        }
+      },
+    });
   };
 }

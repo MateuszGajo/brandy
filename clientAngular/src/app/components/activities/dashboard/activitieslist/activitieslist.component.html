@@ -26,7 +26,7 @@
           <span class="username">{{ activity.user.nick }}</span>
         </div>
         <div class="date">
-          <span class="date-text">Doddano {{ activity.dateFormatted }}</span>
+          <span class="date-text">Dodano {{ activity.dateFormatted }}</span>
         </div>
       </div>
       <div class="card-body">
@@ -37,7 +37,7 @@
       <div class="imageWrapper">
         <img class="card-img-top" src="{{ activity.photo }}" alt="activity" />
       </div>
-      <div class="action">
+      <div class="action" routerLink="activity/{{ activity._id }}">
         <mat-icon fontIcon="chat" class="icon"></mat-icon>
         <span class="comment-count">0</span>
       </div>

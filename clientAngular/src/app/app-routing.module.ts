@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DetailsComponent } from './components/activities/details/details.component';
 import { SigninComponent } from './features/auth/signin/signin.component';
 import { SignupComponent } from './features/auth/signup/signup.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
@@ -15,6 +16,10 @@ const routes: Routes = [
       {
         path: '',
         component: DashboardComponent,
+      },
+      {
+        path: 'activity/:id',
+        component: DetailsComponent,
       },
     ],
   },
