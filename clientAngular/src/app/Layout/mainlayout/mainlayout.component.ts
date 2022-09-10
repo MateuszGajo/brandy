@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { map } from 'rxjs';
 import { User } from 'src/app/_models/auth';
 import { ActivityService } from 'src/app/_services/activity.service';
@@ -12,13 +13,17 @@ import { AuthService } from 'src/app/_services/auth.service';
 export class MainlayoutComponent implements OnInit {
   user: User | null = null;
   search = (value: string) => {};
+  isDashboard = false;
 
   constructor(
     private authSerivce: AuthService,
-    private activityService: ActivityService
+    private activityService: ActivityService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    const pathname = this.router.url;
+    this.isDashboard = pathname === '/';
     this.authSerivce.currentUser$.subscribe({
       next: (user) => {
         if (user) this.user = user;

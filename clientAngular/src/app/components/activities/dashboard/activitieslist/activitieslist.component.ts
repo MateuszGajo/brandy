@@ -18,7 +18,7 @@ export class ActivitiesListComponent implements OnInit {
     private activitySerivce: ActivityService,
     private authSerivce: AuthService
   ) {
-    this.activitySerivce.onGetData.subscribe((data) => {
+    this.activitySerivce.onActivitesGetData.subscribe((data) => {
       console.log(data);
       this.activities = data;
     });
@@ -36,6 +36,7 @@ export class ActivitiesListComponent implements OnInit {
   }
 
   changeVote = (vote: Vote, activityId: string) => {
+    if (!this.user) return;
     this.activitySerivce.updateVoteOnActivities(vote, activityId);
   };
 }
