@@ -17,12 +17,10 @@ export class SigninComponent implements OnInit {
   ngOnInit(): void {}
 
   onModelChange() {
-    console.log('on change');
     if (this.error) this.error = '';
   }
 
   login() {
-    console.log('login?');
     this.authService.login(this.model).subscribe(
       (response) => {
         this.router.navigateByUrl('/');

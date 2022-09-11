@@ -48,6 +48,7 @@
     .card-content {
       display: flex;
       max-height: 700px;
+      width: 100%;
       flex-direction: column;
       .header {
         display: flex;
@@ -80,6 +81,7 @@
         }
       }
       .imageWrapper {
+        margin: 0 auto;
         .card-img-top {
           display: block;
           object-fit: cover;

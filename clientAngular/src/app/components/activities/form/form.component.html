@@ -1,1 +1,42 @@
-<p>form works!</p>
+<div class="container">
+  <h1>Dodaj post</h1>
+  <form (ngSubmit)="addPost()">
+    <div class="form-group">
+      <label for="title">Tytuł</label>
+      <input
+        type="title"
+        class="form-control"
+        placeholder="Dodaj tytuł"
+        id="title"
+        name="title"
+        #title="ngModel"
+        [(ngModel)]="model.title"
+        required
+        title="true"
+      />
+
+      <div *ngIf="title.errors && title.touched">
+        <div *ngIf="title.errors?.['required']" class="inputError">
+          title jest wymagany
+        </div>
+        <div *ngIf="title.errors?.['title']" class="inputError">
+          Nieprawidłowy title
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="file">Zdjęcie</label>
+      <input
+        type="file"
+        class="form-control"
+        accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+        id="file"
+        (change)="handleFileInput($event)"
+        required
+      />
+    </div>
+    <div class="button-wrapper">
+      <button class="btn btn-primary add-post" type="submit">Dodaj post</button>
+    </div>
+  </form>
+</div>

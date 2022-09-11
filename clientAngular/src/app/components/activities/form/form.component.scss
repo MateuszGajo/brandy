@@ -1,0 +1,26 @@
+.container {
+  width: 600px;
+  h1 {
+    padding-top: 10px;
+  }
+  form {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .inputError {
+      color: red;
+    }
+    .button-wrapper {
+      .add-post {
+        margin-top: 5px;
+        margin-left: auto;
+        background: #673ab7;
+        height: 40px;
+        &:hover {
+          background: #5d34a5;
+        }
+      }
+    }
+  }
+}

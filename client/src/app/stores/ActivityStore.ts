@@ -26,7 +26,6 @@ export default class ActivityStore {
 
   loadActivities = async (filters: IActivityFilters = this.filters) => {
     const params = ConvertToParams(filters);
-    console.log(params.toString());
     try {
       const { data } = await agent.Activity.list(params);
       this.activities = data;

@@ -18,7 +18,6 @@ const ActivityCommentForm = () => {
   const { addComment } = useCommentStore();
 
   const handleSubmit = (values: ICreateComment) => {
-    console.log("halo");
     addComment(values, id);
     formik.resetForm();
   };

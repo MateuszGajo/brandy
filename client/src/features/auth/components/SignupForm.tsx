@@ -55,9 +55,6 @@ const SigninForm: React.FC = () => {
     onSubmit: handleSubmit,
   });
 
-  console.log(formik.errors);
-  console.log("formik touched");
-  console.log(formik.touched);
   return (
     <Grid alignItems="center">
       <Container component="main">

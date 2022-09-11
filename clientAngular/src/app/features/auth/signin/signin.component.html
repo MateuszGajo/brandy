@@ -14,7 +14,7 @@
         email="true"
         (ngModelChange)="onModelChange()"
       />
-      <div *ngIf="email.errors">
+      <div *ngIf="email.errors && email.touched">
         <div *ngIf="email.errors?.['required']" class="inputError">
           Email jest wymagany
         </div>

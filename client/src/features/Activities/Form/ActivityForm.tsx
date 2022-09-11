@@ -133,11 +133,9 @@ const ActivityForm = () => {
                     position: "relative",
                   }}
                   onDragEnter={() => {
-                    console.log("enter");
                     setDragOver(true);
                   }}
                   onDragLeave={() => {
-                    console.log("leave");
                     setDragOver(false);
                   }}
                 >

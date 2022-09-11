@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Activity, ActivityFilters } from '../_models/activity';
 import { Vote } from '../_models/vote';
 import { formatActivityDate } from '../_utils/date';
-import { convertToParams } from '../_utils/params';
 
 @Injectable({
   providedIn: 'root',
@@ -141,5 +140,9 @@ export class ActivityService {
         }
       },
     });
+  };
+
+  createActivity = (formData: FormData) => {
+    return this.HttpClient.post('activity/add', formData);
   };
 }

@@ -19,7 +19,6 @@ export class ActivitiesListComponent implements OnInit {
     private authSerivce: AuthService
   ) {
     this.activitySerivce.onActivitesGetData.subscribe((data) => {
-      console.log(data);
       this.activities = data;
     });
   }
@@ -28,8 +27,6 @@ export class ActivitiesListComponent implements OnInit {
     this.activitySerivce.getActivities({});
     this.authSerivce.currentUser$.subscribe({
       next: (user) => {
-        console.log('How about user');
-        console.log(user);
         this.user = user;
       },
     });

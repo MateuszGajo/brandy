@@ -54,8 +54,6 @@ export class DetailsComponent implements OnInit {
 
     this.authSerivce.currentUser$.subscribe({
       next: (user) => {
-        console.log('How about user');
-        console.log(user);
         this.user = user;
       },
     });

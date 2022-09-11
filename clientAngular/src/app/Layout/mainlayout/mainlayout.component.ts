@@ -26,7 +26,7 @@ export class MainlayoutComponent implements OnInit {
     this.isDashboard = pathname === '/';
     this.authSerivce.currentUser$.subscribe({
       next: (user) => {
-        if (user) this.user = user;
+        this.user = user;
       },
     });
 
@@ -48,5 +48,9 @@ export class MainlayoutComponent implements OnInit {
 
     const value = input.value;
     this.search(value);
+  };
+
+  logout = () => {
+    this.authSerivce.logout();
   };
 }

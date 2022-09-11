@@ -14,7 +14,6 @@ export default class CommentStore {
     try {
       const { data } = await agent.Comment.add(activityId, newComment);
       this.comments = [data, ...(this.comments || [])];
-      console.log(this.comments);
     } catch (err) {
       console.log("Problem adding comment" + err);
     }

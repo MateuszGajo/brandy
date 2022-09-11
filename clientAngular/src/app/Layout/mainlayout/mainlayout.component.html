@@ -49,9 +49,17 @@
             aria-labelledby="dropdownMenuButton"
             ngbDropdownMenu
           >
-            <a href="#" class="dropdown-item" ngbDropdownItem>Edit profile</a>
+            <a
+              href="#"
+              class="dropdown-item"
+              routerLink="activity/add"
+              ngbDropdownItem
+              >Dodaj post</a
+            >
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item" ngbDropdownItem>Logout</a>
+            <a href="#" class="dropdown-item" ngbDropdownItem (click)="logout()"
+              >Wyloguj</a
+            >
           </div>
         </div>
       </div>

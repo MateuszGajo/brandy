@@ -23,7 +23,6 @@ export const loadActivityValidator = async (
   next: NextFunction
 ) => {
   const { start, limit, sort, search } = req.query;
-  console.log(req.query);
   try {
     const startNumber = Number(start);
     const limitNumber = Number(limit);
