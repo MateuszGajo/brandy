@@ -153,7 +153,7 @@ const Nav = () => {
               </Menu>
             </>
           ) : (
-            <Link to="/signin">
+            <Link to="/login">
               <Button variant="outlined" sx={{ mt: 1.5, mb: 1.5 }}>
                 Zaloguj
               </Button>

@@ -27,7 +27,7 @@ const Authentication: React.FC<IProps> = ({ children }) => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Typography component={CustomLink} to="/signin">
+                <Typography component={CustomLink} to="/login">
                   Zaloguj
                 </Typography>
               </Grid>
