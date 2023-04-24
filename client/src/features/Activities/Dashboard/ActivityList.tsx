@@ -11,6 +11,7 @@ const ActivityList = () => {
   useEffect(() => {
     if (!activities || activities.length === 0) loadActivities();
   }, []);
+
   return (
     <Box sx={styles.container}>
       {activities &&

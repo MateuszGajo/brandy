@@ -52,8 +52,14 @@ export class AuthService {
 
   logout() {
     return this.http.get('auth/logout').subscribe({
-      next: () => this.router.navigateByUrl('/'),
-      error: () => this.router.navigateByUrl('/'),
+      next: () => {
+        this.router.navigateByUrl('/');
+        this.currentUserSource.next(null);
+      },
+      error: () => {
+        this.router.navigateByUrl('/');
+        this.currentUserSource.next(null);
+      },
     });
   }
 }

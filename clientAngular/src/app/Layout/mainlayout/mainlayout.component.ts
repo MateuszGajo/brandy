@@ -36,7 +36,8 @@ export class MainlayoutComponent implements OnInit {
       return (value: string) => {
         if (timeout) clearTimeout(timeout);
         timeout = setTimeout(() => {
-          this.activityService.getActivities({});
+          console.log('search', value);
+          this.activityService.getActivities({ search: value });
         }, ms);
       };
     };
@@ -47,6 +48,7 @@ export class MainlayoutComponent implements OnInit {
     const input = e.target as HTMLInputElement;
 
     const value = input.value;
+    console.log('input value', value);
     this.search(value);
   };
 

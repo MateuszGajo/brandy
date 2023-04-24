@@ -66,7 +66,7 @@ const Nav = () => {
           alignItems="center"
         >
           <Typography variant="h6">
-            <Link to="/">LOGO</Link>
+            <Link to="/">Brandy</Link>
           </Typography>
           {pathname === "/" ? (
             <TextField
@@ -153,7 +153,7 @@ const Nav = () => {
               </Menu>
             </>
           ) : (
-            <Link to="/login">
+            <Link to="/signin">
               <Button variant="outlined" sx={{ mt: 1.5, mb: 1.5 }}>
                 Zaloguj
               </Button>

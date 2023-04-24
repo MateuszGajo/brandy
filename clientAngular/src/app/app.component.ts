@@ -11,7 +11,6 @@ export class AppComponent {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    console.log('init?');
     this.authService.verify().subscribe();
   }
 }

@@ -6,7 +6,7 @@ import { Navigate, Outlet } from "react-router-dom";
 const RequireAuth = () => {
   const { user, isLoading } = useAuthenticationStore();
   if (isLoading) return null;
-  if (!user) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/signin" />;
   return <Outlet />;
 };
 

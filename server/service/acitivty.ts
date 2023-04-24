@@ -24,16 +24,24 @@ export default class ActivityService {
     yourVote: IVoteType,
     yourPreviousVote: IVoteType | null
   ) {
-    if (yourVote === "up") {
-      if (yourPreviousVote === "down") downVotes--;
-      else if (yourPreviousVote !== "up") upVotes++;
-    } else if (yourVote === "down") {
-      if (yourPreviousVote === "up") upVotes--;
-      else if (yourPreviousVote !== "down") downVotes++;
+    if (yourVote === "up" && yourPreviousVote === "up") {
+      upVotes--;
+    } else if (yourVote === "up" && yourPreviousVote === "down") {
+      upVotes++;
+      downVotes--;
+    } else if (yourVote === "down" && yourPreviousVote === "up") {
+      upVotes--;
+      downVotes++;
+    } else if (yourVote === "down" && yourPreviousVote === "down") {
+      downVotes--;
+    } else if (yourVote === "up" && !yourPreviousVote) {
+      upVotes++;
+    } else if (yourVote === "down" && !yourPreviousVote) {
+      downVotes++;
     }
 
     const allVotes = upVotes + downVotes;
-    const upVoteRatio = upVotes / allVotes;
+    const upVoteRatio = upVotes / (allVotes || 1);
 
     return {
       allVotes,
@@ -110,8 +118,8 @@ export default class ActivityService {
       {
         $set: {
           votes: allVotes,
-          upVotes,
-          downVotes,
+          upVotesCount: upVotes,
+          downVotesCount: downVotes,
           upVoteRatio,
         },
       }

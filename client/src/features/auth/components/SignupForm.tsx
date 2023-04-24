@@ -64,7 +64,7 @@ const SigninForm: React.FC = () => {
             <LockIcon sx={styles.icon} />
           </Avatar>
           <Typography variant="h4" component="h2">
-            Zarejstruj się
+            Zarejestruj się
           </Typography>
           <form
             // component="form"
@@ -136,7 +136,7 @@ const SigninForm: React.FC = () => {
               data-testid="signin-submit-button"
               disabled={!(formik.isValid && formik.dirty)}
             >
-              Zarejstruj
+              Zarejestruj
             </Button>
           </form>
         </Box>

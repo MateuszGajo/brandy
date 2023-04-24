@@ -7,40 +7,6 @@ import { IAuthResponse, IUser } from "app/models/User";
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
 
-// let isRefreshing = false;
-
-axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    const statusCode = error.response.status || null;
-    const originalRequest = error.config;
-
-    // const userLogout = () => {
-    //   store.authenticationStore.logout();
-    // };
-
-    // const refreshToken = () => {
-    //   axios
-    //     .get("auth/refresh")
-    //     .catch(userLogout)
-    //     .finally(() => {
-    //       isRefreshing = false;
-    //     });
-    // };
-
-    // if (statusCode === 401 && originalRequest.url === "auth/token/refresh")
-    //   userLogout();
-    // else if (statusCode === 401 && !isRefreshing) {
-    //   isRefreshing = true;
-    //   refreshToken();
-    // }
-
-    return Promise.reject(error);
-  }
-);
-
 const requests = {
   get: <T>(url: string, opt = {}) => axios.get<T>(url, opt),
   post: <T>(url: string, body = {}) => axios.post<T>(url, body),

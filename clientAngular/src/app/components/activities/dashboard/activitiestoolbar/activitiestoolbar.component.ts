@@ -17,6 +17,7 @@ export class ActivitiestoolbarComponent implements OnInit {
 
   changeActiveEl = (newActiveEl: ActivitySort) => {
     this.active = newActiveEl;
+    console.log('on change active');
     this.activitySerivce.getActivities({ sort: newActiveEl });
   };
 }
